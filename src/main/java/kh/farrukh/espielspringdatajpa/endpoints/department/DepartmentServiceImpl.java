@@ -1,0 +1,75 @@
+package kh.farrukh.espielspringdatajpa.endpoints.department;
+
+import kh.farrukh.espielspringdatajpa.endpoints.faculty.Faculty;
+import kh.farrukh.espielspringdatajpa.endpoints.faculty.FacultyRepository;
+import kh.farrukh.espielspringdatajpa.exception.custom_exceptions.ResourceNotFoundException;
+import kh.farrukh.espielspringdatajpa.utils.paging_sorting.PagingResponse;
+import kh.farrukh.espielspringdatajpa.utils.paging_sorting.SortUtils;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import static kh.farrukh.espielspringdatajpa.utils.checkers.Checkers.*;
+
+@Service
+@RequiredArgsConstructor
+public class DepartmentServiceImpl implements DepartmentService {
+
+    private final DepartmentRepository departmentRepository;
+    private final FacultyRepository facultyRepository;
+
+    @Override
+    public PagingResponse<Department> getDepartments(
+            Long facultyId,
+            int page,
+            int pageSize,
+            String sortBy,
+            String orderBy
+    ) {
+        checkPageNumber(page);
+        if (facultyId == null) {
+            return new PagingResponse<>(departmentRepository.findAll(
+                    PageRequest.of(page - 1, pageSize, Sort.by(SortUtils.parseDirection(orderBy), sortBy))
+            ));
+        } else {
+            checkFacultyId(facultyRepository, facultyId);
+            return new PagingResponse<>(departmentRepository.findAllByFaculty_Id(
+                    facultyId, PageRequest.of(page - 1, pageSize, Sort.by(SortUtils.parseDirection(orderBy), sortBy))
+            ));
+        }
+    }
+
+    @Override
+    public Department getDepartmentById(long id) {
+        return departmentRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Department", "id", id)
+        );
+    }
+
+    @Override
+    public Department addDepartment(DepartmentDTO departmentDto) {
+        return departmentRepository.save(new Department(departmentDto, facultyRepository));
+    }
+
+    @Override
+    public Department updateDepartment(long id, DepartmentDTO departmentDto) {
+        Department existingDepartment = departmentRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Department", "id", id)
+        );
+        Faculty faculty = facultyRepository.findById(departmentDto.getFacultyId()).orElseThrow(
+                () -> new ResourceNotFoundException("Faculty", "id", departmentDto.getFacultyId())
+        );
+
+        existingDepartment.setName(departmentDto.getName());
+        existingDepartment.setFaculty(faculty);
+
+        return departmentRepository.save(existingDepartment);
+    }
+
+    @Override
+    public void deleteDepartmentById(long id) {
+        checkDepartmentId(departmentRepository, id);
+        departmentRepository.deleteById(id);
+    }
+}
