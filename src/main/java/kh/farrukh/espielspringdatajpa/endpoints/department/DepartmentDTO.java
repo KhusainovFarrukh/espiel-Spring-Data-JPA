@@ -15,5 +15,5 @@ public class DepartmentDTO {
     @NotBlank
     private String name;
     @JsonProperty("faculty_id")
-    private long facultyId;
+    private Long facultyId;
 }

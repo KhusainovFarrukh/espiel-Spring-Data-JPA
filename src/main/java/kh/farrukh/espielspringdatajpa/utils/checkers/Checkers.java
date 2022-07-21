@@ -2,6 +2,7 @@ package kh.farrukh.espielspringdatajpa.utils.checkers;
 
 import kh.farrukh.espielspringdatajpa.endpoints.department.DepartmentRepository;
 import kh.farrukh.espielspringdatajpa.endpoints.faculty.FacultyRepository;
+import kh.farrukh.espielspringdatajpa.endpoints.staff.StaffRepository;
 import kh.farrukh.espielspringdatajpa.exception.custom_exceptions.BadRequestException;
 import kh.farrukh.espielspringdatajpa.exception.custom_exceptions.ResourceNotFoundException;
 
@@ -44,6 +45,18 @@ public class Checkers {
     public static void checkDepartmentId(DepartmentRepository departmentRepository, long departmentId) {
         if (!departmentRepository.existsById(departmentId)) {
             throw new ResourceNotFoundException("Department", "id", departmentId);
+        }
+    }
+
+    /**
+     * If the staff does not exist in the database, throw a ResourceNotFoundException
+     *
+     * @param staffRepository The repository that will be used to check if the staff exists.
+     * @param staffId         The id of the staff to be checked
+     */
+    public static void checkStaffId(StaffRepository staffRepository, long staffId) {
+        if (!staffRepository.existsById(staffId)) {
+            throw new ResourceNotFoundException("Department", "id", staffId);
         }
     }
 }
