@@ -27,9 +27,9 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Faculty faculty1 = new Faculty("History");
-        Faculty faculty2 = new Faculty("Maths");
-        Faculty faculty3 = new Faculty("Tourism");
+        Faculty faculty1 = new Faculty("History", null);
+        Faculty faculty2 = new Faculty("Maths", null);
+        Faculty faculty3 = new Faculty("Tourism", null);
 
         faculty1 = facultyRepository.save(faculty1);
         faculty2 = facultyRepository.save(faculty2);
@@ -51,10 +51,10 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         Staff staff2 = new Staff("test", "test", StaffDegree.MASTER, "test", StaffRole.ASSISTANT_TEACHER, department1);
         Staff staff3 = new Staff("test", "test", StaffDegree.MASTER, "test", StaffRole.ADMINISTRATIVE_WORKER, department1);
         Staff staff4 = new Staff("test", "test", StaffDegree.DOCTOR, "test", StaffRole.ADMINISTRATIVE_WORKER, department1);
-        Staff staff5 = new Staff("test", "test", StaffDegree.DOCTOR, "test", StaffRole.HEAD_OF_DEPARTMENT, department2);
+        Staff staff5 = new Staff("test", "test", StaffDegree.DOCTOR, "test", StaffRole.TEACHER, department2);
         Staff staff6 = new Staff("test", "test", StaffDegree.DOCTOR, "test", StaffRole.LECTURER, department2);
         Staff staff7 = new Staff("test", "test", StaffDegree.BACHELOR, "test", StaffRole.LECTURER, department3);
-        Staff staff8 = new Staff("test", "test", StaffDegree.NO_DEGREE, "test", StaffRole.DEAN_OF_FACULTY, department3);
+        Staff staff8 = new Staff("test", "test", StaffDegree.NO_DEGREE, "test", StaffRole.LECTURER, department3);
 
         staff1 = staffRepository.save(staff1);
         staff2 = staffRepository.save(staff2);

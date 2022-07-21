@@ -1,6 +1,9 @@
 package kh.farrukh.espielspringdatajpa.endpoints.faculty;
 
 
+import kh.farrukh.espielspringdatajpa.endpoints.staff.Staff;
+import kh.farrukh.espielspringdatajpa.endpoints.staff.StaffRepository;
+import kh.farrukh.espielspringdatajpa.endpoints.staff.StaffRole;
 import kh.farrukh.espielspringdatajpa.exception.custom_exceptions.ResourceNotFoundException;
 import kh.farrukh.espielspringdatajpa.utils.paging_sorting.PagingResponse;
 import kh.farrukh.espielspringdatajpa.utils.paging_sorting.SortUtils;
@@ -17,6 +20,7 @@ import static kh.farrukh.espielspringdatajpa.utils.checkers.Checkers.checkPageNu
 public class FacultyServiceImpl implements FacultyService {
 
     private final FacultyRepository facultyRepository;
+    private final StaffRepository staffRepository;
 
     @Override
     public PagingResponse<Faculty> getFaculties(
@@ -40,7 +44,7 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty addFaculty(FacultyDTO facultyDto) {
-        return facultyRepository.save(new Faculty(facultyDto));
+        return facultyRepository.save(new Faculty(facultyDto, staffRepository));
     }
 
     // TODO: 7/20/22 read about update logic best practices
@@ -49,6 +53,18 @@ public class FacultyServiceImpl implements FacultyService {
         Faculty existingFaculty = facultyRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Faculty", "id", id)
         );
+
+        if (facultyDto.getDeanId() != null) {
+            Staff dean = staffRepository.findById(facultyDto.getDeanId()).orElseThrow(
+                    () -> new ResourceNotFoundException("Staff", "id", facultyDto.getDeanId())
+            );
+            Staff prevDean = existingFaculty.getDean();
+            prevDean.setRole(StaffRole.ADMINISTRATIVE_WORKER);
+            dean.setRole(StaffRole.DEAN_OF_FACULTY);
+            staffRepository.save(prevDean);
+            staffRepository.save(dean);
+            existingFaculty.setDean(dean);
+        }
 
         existingFaculty.setName(facultyDto.getName());
 

@@ -1,5 +1,6 @@
 package kh.farrukh.espielspringdatajpa.endpoints.faculty;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,4 +14,6 @@ public class FacultyDTO {
 
     @NotBlank
     private String name;
+    @JsonProperty("dean_id")
+    private Long deanId;
 }

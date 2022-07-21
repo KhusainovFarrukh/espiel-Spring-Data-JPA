@@ -1,16 +1,17 @@
 package kh.farrukh.espielspringdatajpa.endpoints.faculty;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import kh.farrukh.espielspringdatajpa.base.entity.EntityWithId;
+import kh.farrukh.espielspringdatajpa.endpoints.staff.Staff;
+import kh.farrukh.espielspringdatajpa.endpoints.staff.StaffRepository;
+import kh.farrukh.espielspringdatajpa.exception.custom_exceptions.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import static kh.farrukh.espielspringdatajpa.base.entity.EntityWithId.ID_GENERATOR;
 
@@ -56,8 +57,16 @@ public class Faculty extends EntityWithId {
      */
     @Column(nullable = false, columnDefinition = "TEXT")
     private String name;
+    @JsonIgnoreProperties("department")
+    @OneToOne
+    private Staff dean;
 
-    public Faculty(FacultyDTO FacultyDTO) {
-        BeanUtils.copyProperties(FacultyDTO, this);
+    public Faculty(FacultyDTO facultyDTO, StaffRepository staffRepository) {
+        BeanUtils.copyProperties(facultyDTO, this);
+        if (facultyDTO.getDeanId() != null) {
+            this.dean = staffRepository.findById(facultyDTO.getDeanId()).orElseThrow(
+                    () -> new ResourceNotFoundException("Staff", "id", facultyDTO.getDeanId())
+            );
+        }
     }
 }
