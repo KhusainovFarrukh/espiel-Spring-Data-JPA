@@ -2,6 +2,9 @@ package kh.farrukh.espielspringdatajpa.endpoints.department;
 
 import kh.farrukh.espielspringdatajpa.endpoints.faculty.Faculty;
 import kh.farrukh.espielspringdatajpa.endpoints.faculty.FacultyRepository;
+import kh.farrukh.espielspringdatajpa.endpoints.staff.Staff;
+import kh.farrukh.espielspringdatajpa.endpoints.staff.StaffRepository;
+import kh.farrukh.espielspringdatajpa.endpoints.staff.StaffRole;
 import kh.farrukh.espielspringdatajpa.exception.custom_exceptions.ResourceNotFoundException;
 import kh.farrukh.espielspringdatajpa.utils.paging_sorting.PagingResponse;
 import kh.farrukh.espielspringdatajpa.utils.paging_sorting.SortUtils;
@@ -18,6 +21,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
     private final FacultyRepository facultyRepository;
+    private final StaffRepository staffRepository;
 
     @Override
     public PagingResponse<Department> getDepartments(
@@ -49,7 +53,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Department addDepartment(DepartmentDTO departmentDto) {
-        return departmentRepository.save(new Department(departmentDto, facultyRepository));
+        return departmentRepository.save(new Department(departmentDto, facultyRepository, staffRepository));
     }
 
     @Override
@@ -60,6 +64,20 @@ public class DepartmentServiceImpl implements DepartmentService {
         Faculty faculty = facultyRepository.findById(departmentDto.getFacultyId()).orElseThrow(
                 () -> new ResourceNotFoundException("Faculty", "id", departmentDto.getFacultyId())
         );
+
+        if (departmentDto.getHeadId() != null) {
+            Staff head = staffRepository.findById(departmentDto.getHeadId()).orElseThrow(
+                    () -> new ResourceNotFoundException("Staff", "id", departmentDto.getFacultyId())
+            );
+            Staff prevHead = existingDepartment.getHead();
+            if (prevHead != null) {
+                prevHead.setRole(StaffRole.ADMINISTRATIVE_WORKER);
+                staffRepository.save(prevHead);
+            }
+            head.setRole(StaffRole.HEAD_OF_DEPARTMENT);
+            staffRepository.save(head);
+            existingDepartment.setHead(head);
+        }
 
         existingDepartment.setName(departmentDto.getName());
         existingDepartment.setFaculty(faculty);

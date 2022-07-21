@@ -35,11 +35,11 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         faculty2 = facultyRepository.save(faculty2);
         faculty3 = facultyRepository.save(faculty3);
 
-        Department department1 = new Department("World history", faculty1);
-        Department department2 = new Department("Anthropology", faculty1);
-        Department department3 = new Department("Hotel works", faculty3);
-        Department department4 = new Department("Green tourism", faculty3);
-        Department department5 = new Department("Local tourism", faculty3);
+        Department department1 = new Department("World history", faculty1, null);
+        Department department2 = new Department("Anthropology", faculty1, null);
+        Department department3 = new Department("Hotel works", faculty3, null);
+        Department department4 = new Department("Green tourism", faculty3, null);
+        Department department5 = new Department("Local tourism", faculty3, null);
 
         department1 = departmentRepository.save(department1);
         department2 = departmentRepository.save(department2);

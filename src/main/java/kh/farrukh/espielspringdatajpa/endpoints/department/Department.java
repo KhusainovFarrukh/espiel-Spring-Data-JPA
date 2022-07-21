@@ -1,8 +1,11 @@
 package kh.farrukh.espielspringdatajpa.endpoints.department;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import kh.farrukh.espielspringdatajpa.base.entity.EntityWithId;
 import kh.farrukh.espielspringdatajpa.endpoints.faculty.Faculty;
 import kh.farrukh.espielspringdatajpa.endpoints.faculty.FacultyRepository;
+import kh.farrukh.espielspringdatajpa.endpoints.staff.Staff;
+import kh.farrukh.espielspringdatajpa.endpoints.staff.StaffRepository;
 import kh.farrukh.espielspringdatajpa.exception.custom_exceptions.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,11 +30,19 @@ public class Department extends EntityWithId {
     private String name;
     @ManyToOne
     private Faculty faculty;
+    @JsonIgnoreProperties("department")
+    @OneToOne
+    private Staff head;
 
-    public Department(DepartmentDTO departmentDTO, FacultyRepository facultyRepository) {
+    public Department(DepartmentDTO departmentDTO, FacultyRepository facultyRepository, StaffRepository staffRepository) {
         BeanUtils.copyProperties(departmentDTO, this);
         this.faculty = facultyRepository.findById(departmentDTO.getFacultyId()).orElseThrow(
                 () -> new ResourceNotFoundException("Faculty", "id", departmentDTO.getFacultyId())
         );
+        if (departmentDTO.getHeadId() != null) {
+            this.head = staffRepository.findById(departmentDTO.getHeadId()).orElseThrow(
+                    () -> new ResourceNotFoundException("Staff", "id", departmentDTO.getHeadId())
+            );
+        }
     }
 }

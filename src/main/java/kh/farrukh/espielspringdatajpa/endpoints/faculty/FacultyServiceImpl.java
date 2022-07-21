@@ -59,9 +59,11 @@ public class FacultyServiceImpl implements FacultyService {
                     () -> new ResourceNotFoundException("Staff", "id", facultyDto.getDeanId())
             );
             Staff prevDean = existingFaculty.getDean();
-            prevDean.setRole(StaffRole.ADMINISTRATIVE_WORKER);
+            if (prevDean != null) {
+                prevDean.setRole(StaffRole.ADMINISTRATIVE_WORKER);
+                staffRepository.save(prevDean);
+            }
             dean.setRole(StaffRole.DEAN_OF_FACULTY);
-            staffRepository.save(prevDean);
             staffRepository.save(dean);
             existingFaculty.setDean(dean);
         }
