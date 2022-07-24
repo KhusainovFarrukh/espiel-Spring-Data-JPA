@@ -2,9 +2,11 @@ package kh.farrukh.espielspringdatajpa.endpoints.staff;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
-public interface StaffRepository extends JpaRepository<Staff, Long> {
+@Repository
+public interface StaffRepository extends PagingAndSortingRepository<Staff, Long> {
 
     Page<Staff> findAllByDepartment_Id(long departmentId, Pageable pageable);
 

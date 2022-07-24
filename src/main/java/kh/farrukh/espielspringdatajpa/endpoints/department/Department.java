@@ -12,12 +12,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
-
-import javax.persistence.*;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import static kh.farrukh.espielspringdatajpa.base.entity.EntityWithId.ID_GENERATOR;
 
-@Entity
 @Table(name = "departments")
 @Getter
 @Setter

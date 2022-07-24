@@ -10,12 +10,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
-
-import javax.persistence.*;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import static kh.farrukh.espielspringdatajpa.base.entity.EntityWithId.ID_GENERATOR;
 
-@Entity
 @Table(name = "staffs")
 @Getter
 @Setter
@@ -36,6 +35,7 @@ public class Staff extends EntityWithId {
     @JsonProperty("main_subject")
     @Column(columnDefinition = "TEXT")
     private String mainSubject;
+    // TODO: 7/22/22 implement EnumType.STRING in JDBC
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StaffRole role;
