@@ -1,7 +1,7 @@
 Entity lifecycle 
 https://www.youtube.com/watch?v=Y7PpjerZkc0&t
 https://www.youtube.com/watch?v=j6MHydQrXoE
-
+https://www.youtube.com/watch?v=GOdh_6pAyYE
 
 A persistence context is a set of entity instances in which for any persistent entity identity
 there is a unique entity instance. Within the persistence context, the entity instance and their
@@ -48,3 +48,12 @@ Detached -> Managed: EntityManager.update(entity), EntityManager.merge(entity)
 
 --------------------------------------------------------------------
 
+Relationships
+
+todos:
++ create new package for relationships
+2. practice & read annotation comment-docs
+3. simple youtube tutorials
+4. bidirectional
+5. Thorben Janssen best practices video (about bidirectional)
+6. Read docs/articles

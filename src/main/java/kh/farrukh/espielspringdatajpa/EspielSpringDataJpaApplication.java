@@ -1,13 +1,13 @@
 package kh.farrukh.espielspringdatajpa;
 
-import kh.farrukh.espielspringdatajpa.endpoints.department.Department;
-import kh.farrukh.espielspringdatajpa.endpoints.department.DepartmentRepository;
-import kh.farrukh.espielspringdatajpa.endpoints.faculty.Faculty;
-import kh.farrukh.espielspringdatajpa.endpoints.faculty.FacultyRepository;
-import kh.farrukh.espielspringdatajpa.endpoints.staff.Staff;
-import kh.farrukh.espielspringdatajpa.endpoints.staff.StaffDegree;
-import kh.farrukh.espielspringdatajpa.endpoints.staff.StaffRepository;
-import kh.farrukh.espielspringdatajpa.endpoints.staff.StaffRole;
+import kh.farrukh.espielspringdatajpa.main.endpoints.department.Department;
+import kh.farrukh.espielspringdatajpa.main.endpoints.department.DepartmentRepository;
+import kh.farrukh.espielspringdatajpa.main.endpoints.faculty.Faculty;
+import kh.farrukh.espielspringdatajpa.main.endpoints.faculty.FacultyRepository;
+import kh.farrukh.espielspringdatajpa.main.endpoints.staff.Staff;
+import kh.farrukh.espielspringdatajpa.main.endpoints.staff.StaffDegree;
+import kh.farrukh.espielspringdatajpa.main.endpoints.staff.StaffRepository;
+import kh.farrukh.espielspringdatajpa.main.endpoints.staff.StaffRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
