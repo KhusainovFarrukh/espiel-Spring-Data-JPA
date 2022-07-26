@@ -12,6 +12,9 @@ import kh.farrukh.espielspringdatajpa.relationships.book.Book;
 import kh.farrukh.espielspringdatajpa.relationships.book.BookRepository;
 import kh.farrukh.espielspringdatajpa.relationships.course.Course;
 import kh.farrukh.espielspringdatajpa.relationships.course.CourseRepository;
+import kh.farrukh.espielspringdatajpa.relationships.phone_number.PhoneNumber;
+import kh.farrukh.espielspringdatajpa.relationships.teacher.Teacher;
+import kh.farrukh.espielspringdatajpa.relationships.teacher.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -32,6 +35,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
     private final CourseRepository courseRepository;
     private final BookRepository bookRepository;
+    private final TeacherRepository teacherRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(EspielSpringDataJpaApplication.class, args);
@@ -85,6 +89,15 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
     private void populateRelationshipsTestData() {
         try {
+            PhoneNumber fakePhoneNumber = new PhoneNumber("+998", "98-765-43-21");
+            List<Teacher> teachers = List.of(
+                    new Teacher(0, "John", "Smith", fakePhoneNumber),
+                    new Teacher(0, "Alex", "Pride", fakePhoneNumber),
+                    new Teacher(0, "Adam", "Warlock", fakePhoneNumber)
+            );
+
+            teachers = (List<Teacher>) teacherRepository.saveAll(teachers);
+
             List<Book> books = List.of(
                     new Book(0, "Java guides", "Kim Jung On", 2001),
                     new Book(0, "From Java to Kotlin", "Raw Wonder", 2019),
@@ -96,13 +109,13 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
             books = (List<Book>) bookRepository.saveAll(books);
 
             List<Course> courses = List.of(
-                    new Course(0, "Master Java", "", Set.of(
+                    new Course(0, "Master Java", "", teachers.get(0), Set.of(
                             books.get(0), books.get(3), books.get(1)
                     )),
-                    new Course(0, "Backend development", "", Set.of(
+                    new Course(0, "Backend development", "", teachers.get(0), Set.of(
                             books.get(2), books.get(3)
                     )),
-                    new Course(0, "Android Development", "", Set.of(
+                    new Course(0, "Android Development", "", teachers.get(1), Set.of(
                             books.get(0), books.get(4), books.get(1)
                     ))
             );
