@@ -8,18 +8,30 @@ import kh.farrukh.espielspringdatajpa.main.endpoints.staff.Staff;
 import kh.farrukh.espielspringdatajpa.main.endpoints.staff.StaffDegree;
 import kh.farrukh.espielspringdatajpa.main.endpoints.staff.StaffRepository;
 import kh.farrukh.espielspringdatajpa.main.endpoints.staff.StaffRole;
+import kh.farrukh.espielspringdatajpa.relationships.book.Book;
+import kh.farrukh.espielspringdatajpa.relationships.book.BookRepository;
+import kh.farrukh.espielspringdatajpa.relationships.course.Course;
+import kh.farrukh.espielspringdatajpa.relationships.course.CourseRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.List;
+import java.util.Set;
+
 @SpringBootApplication
 @RequiredArgsConstructor
+@Slf4j
 public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
     private final FacultyRepository facultyRepository;
     private final DepartmentRepository departmentRepository;
     private final StaffRepository staffRepository;
+
+    private final CourseRepository courseRepository;
+    private final BookRepository bookRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(EspielSpringDataJpaApplication.class, args);
@@ -27,6 +39,11 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        populateMainTestData();
+        populateRelationshipsTestData();
+    }
+
+    private void populateMainTestData() {
         Faculty faculty1 = new Faculty("History", null);
         Faculty faculty2 = new Faculty("Maths", null);
         Faculty faculty3 = new Faculty("Tourism", null);
@@ -64,5 +81,38 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         staff6 = staffRepository.save(staff6);
         staff7 = staffRepository.save(staff7);
         staff8 = staffRepository.save(staff8);
+    }
+
+    private void populateRelationshipsTestData() {
+        try {
+            List<Book> books = List.of(
+                    new Book(0, "Java guides", "Kim Jung On", 2001),
+                    new Book(0, "From Java to Kotlin", "Raw Wonder", 2019),
+                    new Book(0, "Everything about Django", "Mike Sims", 2022),
+                    new Book(0, "New generation: Java backend", "Spring publishers", 2022),
+                    new Book(0, "Android development in Java", "Google", 2011)
+            );
+
+            books = (List<Book>) bookRepository.saveAll(books);
+
+            List<Course> courses = List.of(
+                    new Course(0, "Master Java", "", Set.of(
+                            books.get(0), books.get(3), books.get(1)
+                    )),
+                    new Course(0, "Backend development", "", Set.of(
+                            books.get(2), books.get(3)
+                    )),
+                    new Course(0, "Android Development", "", Set.of(
+                            books.get(0), books.get(4), books.get(1)
+                    ))
+            );
+
+            courses = (List<Course>) courseRepository.saveAll(courses);
+
+            bookRepository.findAll().forEach(book -> log.info(book.toString()));
+            courseRepository.findAll().forEach(course -> log.info(course.toString()));
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
     }
 }
