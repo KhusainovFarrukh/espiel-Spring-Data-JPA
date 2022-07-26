@@ -1,15 +1,17 @@
 package kh.farrukh.espielspringdatajpa.relationships.book;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import kh.farrukh.espielspringdatajpa.relationships.teacher.Teacher;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "books")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @ToString
 public class Book {
 
@@ -21,6 +23,12 @@ public class Book {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String title;
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String author;
     private Integer year;
+
+    /**
+     * Book is owning side of bidirectional association.
+     * When creating/updating book, you can assign (associate) teachers (authors) with it
+     */
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Teacher> authors;
 }

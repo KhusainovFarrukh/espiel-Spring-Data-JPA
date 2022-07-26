@@ -21,6 +21,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -89,25 +90,36 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
     private void populateRelationshipsTestData() {
         try {
+            // populate teachers
             PhoneNumber fakePhoneNumber = new PhoneNumber("+998", "98-765-43-21");
             List<Teacher> teachers = List.of(
-                    new Teacher(0, "John", "Smith", fakePhoneNumber),
-                    new Teacher(0, "Alex", "Pride", fakePhoneNumber),
-                    new Teacher(0, "Adam", "Warlock", fakePhoneNumber)
+                    new Teacher(0, "John", "Smith", fakePhoneNumber, Collections.emptySet()),
+                    new Teacher(0, "Alex", "Pride", fakePhoneNumber, Collections.emptySet()),
+                    new Teacher(0, "Adam", "Warlock", fakePhoneNumber, Collections.emptySet())
             );
-
             teachers = (List<Teacher>) teacherRepository.saveAll(teachers);
 
+            // populate books
             List<Book> books = List.of(
-                    new Book(0, "Java guides", "Kim Jung On", 2001),
-                    new Book(0, "From Java to Kotlin", "Raw Wonder", 2019),
-                    new Book(0, "Everything about Django", "Mike Sims", 2022),
-                    new Book(0, "New generation: Java backend", "Spring publishers", 2022),
-                    new Book(0, "Android development in Java", "Google", 2011)
+                    new Book(0, "Java guides", 2001, Set.of(teachers.get(0), teachers.get(1))),
+                    new Book(0, "From Java to Kotlin", 2019, Set.of(teachers.get(1), teachers.get(2))),
+                    new Book(0, "Everything about Django", 2022, Set.of(teachers.get(0))),
+                    new Book(0, "New generation: Java backend", 2022, Set.of(teachers.get(2))),
+                    new Book(0, "Android development in Java", 2011, Set.of(teachers.get(0), teachers.get(1), teachers.get(2)))
             );
-
             books = (List<Book>) bookRepository.saveAll(books);
 
+            // try to update book-teacher many-to-many association by owning side (book)
+            // must work
+            books.get(0).setAuthors(Set.of(teachers.get(0)));
+            bookRepository.save(books.get(0));
+
+            // try to update book-teacher many-to-many association by non-owning side (teacher)
+            // must not work
+            teachers.get(0).setBooks(Set.of(books.get(0)));
+            teacherRepository.save(teachers.get(0));
+
+            // populate courses
             List<Course> courses = List.of(
                     new Course(0, "Master Java", "", teachers.get(0), Set.of(
                             books.get(0), books.get(3), books.get(1)
@@ -119,9 +131,10 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
                             books.get(0), books.get(4), books.get(1)
                     ))
             );
-
             courses = (List<Course>) courseRepository.saveAll(courses);
 
+            // print out all persisted data
+            teacherRepository.findAll().forEach(teacher -> log.info(teacher.toString()));
             bookRepository.findAll().forEach(book -> log.info(book.toString()));
             courseRepository.findAll().forEach(course -> log.info(course.toString()));
         } catch (RuntimeException e) {
