@@ -7,3 +7,4 @@ todos:
 4. bidirectional
 5. Thorben Janssen best practices video (about bidirectional)
 6. Read docs/articles
+7. todos in relationships package
