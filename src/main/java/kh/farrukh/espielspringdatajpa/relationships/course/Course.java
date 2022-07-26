@@ -29,7 +29,13 @@ public class Course {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ManyToOne
+    /**
+     * like ManyToMany but non-owning side data is single (One)
+     * <p>
+     * optional - Whether the association is optional. If set to false then a non-null relationship must always exist.
+     * default value is true
+     */
+    @ManyToOne(optional = false)
     private Teacher teacher;
 
     /**
