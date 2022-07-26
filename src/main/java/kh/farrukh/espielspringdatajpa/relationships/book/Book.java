@@ -30,5 +30,15 @@ public class Book {
      * When creating/updating book, you can assign (associate) teachers (authors) with it
      */
     @ManyToMany(fetch = FetchType.EAGER)
+    /**
+     * JoinTable is not required, it is only for customizing
+     * <p>
+     * See docs for additional data
+     */
+    @JoinTable(
+            name = "books_authors",
+            joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id")
+    )
     private Set<Teacher> authors;
 }

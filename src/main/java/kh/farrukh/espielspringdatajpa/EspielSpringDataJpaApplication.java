@@ -13,6 +13,8 @@ import kh.farrukh.espielspringdatajpa.relationships.book.BookRepository;
 import kh.farrukh.espielspringdatajpa.relationships.course.Course;
 import kh.farrukh.espielspringdatajpa.relationships.course.CourseRepository;
 import kh.farrukh.espielspringdatajpa.relationships.phone_number.PhoneNumber;
+import kh.farrukh.espielspringdatajpa.relationships.student.Student;
+import kh.farrukh.espielspringdatajpa.relationships.student.StudentRepository;
 import kh.farrukh.espielspringdatajpa.relationships.teacher.Teacher;
 import kh.farrukh.espielspringdatajpa.relationships.teacher.TeacherRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -37,6 +38,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
     private final CourseRepository courseRepository;
     private final BookRepository bookRepository;
     private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(EspielSpringDataJpaApplication.class, args);
@@ -93,9 +95,9 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
             // populate teachers
             PhoneNumber fakePhoneNumber = new PhoneNumber("+998", "98-765-43-21");
             List<Teacher> teachers = List.of(
-                    new Teacher(0, "John", "Smith", fakePhoneNumber, Collections.emptySet()),
-                    new Teacher(0, "Alex", "Pride", fakePhoneNumber, Collections.emptySet()),
-                    new Teacher(0, "Adam", "Warlock", fakePhoneNumber, Collections.emptySet())
+                    new Teacher(0, "John", "Smith", fakePhoneNumber),
+                    new Teacher(0, "Alex", "Pride", fakePhoneNumber),
+                    new Teacher(0, "Adam", "Warlock", fakePhoneNumber)
             );
             teachers = (List<Teacher>) teacherRepository.saveAll(teachers);
 
@@ -119,6 +121,16 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
             teachers.get(0).setBooks(Set.of(books.get(0)));
             teacherRepository.save(teachers.get(0));
 
+            // populate students
+            List<Student> students = List.of(
+                    new Student(0, "Mark", "Ruffalo", fakePhoneNumber, teachers.get(0)),
+                    new Student(0, "Chris", "Evans", fakePhoneNumber, teachers.get(1)),
+                    new Student(0, "Robert", "Downey", fakePhoneNumber, teachers.get(2)),
+                    new Student(0, "Scarlett", "Johansson", fakePhoneNumber, teachers.get(2)),
+                    new Student(0, "Chris", "Hemsworth", fakePhoneNumber, teachers.get(1))
+            );
+            students = (List<Student>) studentRepository.saveAll(students);
+
             // populate courses
             List<Course> courses = List.of(
                     new Course(0, "Master Java", "", teachers.get(0), Set.of(
@@ -135,6 +147,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
             // print out all persisted data
             teacherRepository.findAll().forEach(teacher -> log.info(teacher.toString()));
+            studentRepository.findAll().forEach(student -> log.info(student.toString()));
             bookRepository.findAll().forEach(book -> log.info(book.toString()));
             courseRepository.findAll().forEach(course -> log.info(course.toString()));
         } catch (RuntimeException e) {

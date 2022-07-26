@@ -2,6 +2,7 @@ package kh.farrukh.espielspringdatajpa.relationships.teacher;
 
 import kh.farrukh.espielspringdatajpa.relationships.book.Book;
 import kh.farrukh.espielspringdatajpa.relationships.phone_number.PhoneNumber;
+import kh.farrukh.espielspringdatajpa.relationships.student.Student;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString(exclude = "books")
+@ToString(exclude = {"books", "pupils"})
 public class Teacher {
 
     @Id
@@ -34,4 +35,20 @@ public class Teacher {
      */
     @ManyToMany(mappedBy = "authors", fetch = FetchType.EAGER)
     private Set<Book> books;
+
+    /**
+     * !!! OneToMany is always non-owning-side of bidirectional association.
+     * <p>
+     * Teacher is non-owning side of bidirectional association.
+     * When creating/updating teacher, you can not assign (associate) students (pupils) to it.
+     */
+    @OneToMany(mappedBy = "tutor", fetch = FetchType.EAGER)
+    private Set<Student> pupils;
+
+    public Teacher(long id, String firstName, String lastName, PhoneNumber phoneNumber) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+    }
 }
