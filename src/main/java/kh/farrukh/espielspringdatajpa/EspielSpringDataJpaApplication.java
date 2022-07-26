@@ -13,6 +13,8 @@ import kh.farrukh.espielspringdatajpa.relationships.book.BookRepository;
 import kh.farrukh.espielspringdatajpa.relationships.course.Course;
 import kh.farrukh.espielspringdatajpa.relationships.course.CourseRepository;
 import kh.farrukh.espielspringdatajpa.relationships.phone_number.PhoneNumber;
+import kh.farrukh.espielspringdatajpa.relationships.room.Room;
+import kh.farrukh.espielspringdatajpa.relationships.room.RoomRepository;
 import kh.farrukh.espielspringdatajpa.relationships.student.Student;
 import kh.farrukh.espielspringdatajpa.relationships.student.StudentRepository;
 import kh.farrukh.espielspringdatajpa.relationships.student_card.StudentCard;
@@ -25,7 +27,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -43,6 +44,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
     private final StudentCardRepository studentCardRepository;
+    private final RoomRepository roomRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(EspielSpringDataJpaApplication.class, args);
@@ -105,6 +107,14 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
             );
             teachers = (List<Teacher>) teacherRepository.saveAll(teachers);
 
+            // populate rooms
+            List<Room> rooms = List.of(
+                    new Room(0, teachers.get(0)),
+                    new Room(0, teachers.get(1)),
+                    new Room(0, teachers.get(2))
+            );
+            rooms = (List<Room>) roomRepository.saveAll(rooms);
+
             // populate books
             List<Book> books = List.of(
                     new Book(0, "Java guides", 2001, Set.of(teachers.get(0), teachers.get(1))),
@@ -143,7 +153,6 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
             );
             studentCards = (List<StudentCard>) studentCardRepository.saveAll(studentCards);
 
-
             // populate courses
             List<Course> courses = List.of(
                     new Course(0, "Master Java", "", teachers.get(0), Set.of(
@@ -160,6 +169,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
             // print out all persisted data
             teacherRepository.findAll().forEach(teacher -> log.info(teacher.toString()));
+            roomRepository.findAll().forEach(room -> log.info(room.toString()));
             studentRepository.findAll().forEach(student -> log.info(student.toString()));
             studentCardRepository.findAll().forEach(studentCard -> log.info(studentCard.toString()));
             bookRepository.findAll().forEach(book -> log.info(book.toString()));
