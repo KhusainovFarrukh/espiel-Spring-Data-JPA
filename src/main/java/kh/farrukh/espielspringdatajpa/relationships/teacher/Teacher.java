@@ -39,6 +39,10 @@ public class Teacher {
     /**
      * !!! OneToMany is always non-owning-side of bidirectional association.
      * <p>
+     * !!! There will not be additional table db for foreign keys. (in One-to-Many bidirectional association)
+     * tutor_id foreign key (column) will be in students table.
+     * But you can get Set of Students from Teacher and Teacher from Student.
+     * <p>
      * Teacher is non-owning side of bidirectional association.
      * When creating/updating teacher, you can not assign (associate) students (pupils) to it.
      */

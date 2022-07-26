@@ -1,6 +1,7 @@
 package kh.farrukh.espielspringdatajpa.relationships.student;
 
 import kh.farrukh.espielspringdatajpa.relationships.phone_number.PhoneNumber;
+import kh.farrukh.espielspringdatajpa.relationships.student_card.StudentCard;
 import kh.farrukh.espielspringdatajpa.relationships.teacher.Teacher;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString()
+@ToString(exclude = "card")
 public class Student {
 
     @Id
@@ -36,4 +37,20 @@ public class Student {
      */
     @ManyToOne(fetch = FetchType.EAGER)
     private Teacher tutor;
+
+    /**
+     * !!! There will not be card_id column in students table. (in One-to-One bidirectional association)
+     * student_id foreign key (column) will be in student_cards table.
+     * But you can get StudentCard from Student and vice-versa.
+     */
+    @OneToOne(mappedBy = "owner", fetch = FetchType.EAGER)
+    private StudentCard card;
+
+    public Student(long id, String firstName, String lastName, PhoneNumber phoneNumber, Teacher tutor) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.tutor = tutor;
+    }
 }
