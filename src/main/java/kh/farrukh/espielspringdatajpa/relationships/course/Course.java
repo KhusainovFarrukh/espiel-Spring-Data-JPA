@@ -2,9 +2,10 @@ package kh.farrukh.espielspringdatajpa.relationships.course;
 
 import kh.farrukh.espielspringdatajpa.relationships.book.Book;
 import kh.farrukh.espielspringdatajpa.relationships.teacher.Teacher;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.Session;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -16,7 +17,9 @@ import java.util.Set;
 )
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@Getter
+@Setter
+//@ToString
 public class Course {
 
     @Id
@@ -61,4 +64,16 @@ public class Course {
     // TODO: 7/26/22 more about FetchType
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Book> books;
+
+//    todo https://www.baeldung.com/hibernate-initialize-proxy-exception
+    @Override
+    public String toString() {
+        return "Course{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", teacher=" + teacher +
+                ", books=" + books +
+                '}';
+    }
 }
