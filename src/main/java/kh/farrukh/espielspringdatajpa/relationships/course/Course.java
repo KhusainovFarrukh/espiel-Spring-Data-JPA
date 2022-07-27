@@ -3,7 +3,6 @@ package kh.farrukh.espielspringdatajpa.relationships.course;
 import kh.farrukh.espielspringdatajpa.relationships.book.Book;
 import kh.farrukh.espielspringdatajpa.relationships.teacher.Teacher;
 import lombok.*;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -13,12 +12,11 @@ import java.util.Set;
         name = "courses",
         uniqueConstraints = {@UniqueConstraint(name = "course_title_unique_key", columnNames = "title")}
 )
-@Transactional
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-//@ToString
+@ToString
 public class Course {
 
     @Id
@@ -61,15 +59,17 @@ public class Course {
      */
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Book> books;
+
     /**
      * todo fix FetchType.LAZY: no Session exception
-     *
+     * <p>
      * Possible solutions:
      * 1. Transactional annotation (https://stackoverflow.com/a/32276916/18366962)
      * NOT WORKED
-     *
-     *
-     * 2. https://stackoverflow.com/a/50882857/18366962
+     * <p>
+     * 2. enable_lazy_load_no_trans=true (https://stackoverflow.com/a/50882857/18366962)
+     * WORKED
+     * <p>
      * 3. https://stackoverflow.com/a/21575368/18366962
      * 4. https://stackoverflow.com/a/39465150/18366962
      * 5. https://stackoverflow.com/a/39372379/18366962
@@ -78,23 +78,12 @@ public class Course {
      * 8. Idea: custom method in repo
      * 9. search for other possible solutions
      * 10. ask communities for other possible solutions
-     *
-     *
+     * <p>
+     * <p>
      * https://www.baeldung.com/hibernate-initialize-proxy-exception
      * https://thorben-janssen.com/lazyinitializationexception/
      * https://javarevisited.blogspot.com/2014/04/orghibernatelazyinitializationException-Could-not-initialize-proxy-no-session-hibernate-java.html
      * https://qna.habr.com/q/564704
      * https://blog.frankel.ch/guide-lazyinitializationexception/
      */
-    @Override
-    @Transactional
-    public String toString() {
-        return "Course{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", teacher=" + teacher +
-                ", books=" + getBooks() +
-                '}';
-    }
 }

@@ -1,5 +1,9 @@
 package kh.farrukh.espielspringdatajpa;
 
+import kh.farrukh.espielspringdatajpa.fetch_type.ChildEntity;
+import kh.farrukh.espielspringdatajpa.fetch_type.ChildEntityRepository;
+import kh.farrukh.espielspringdatajpa.fetch_type.ParentEntity;
+import kh.farrukh.espielspringdatajpa.fetch_type.ParentEntityRepository;
 import kh.farrukh.espielspringdatajpa.main.endpoints.department.Department;
 import kh.farrukh.espielspringdatajpa.main.endpoints.department.DepartmentRepository;
 import kh.farrukh.espielspringdatajpa.main.endpoints.faculty.Faculty;
@@ -26,16 +30,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 @SpringBootApplication
 @RequiredArgsConstructor
 @Slf4j
-@EnableTransactionManagement
 public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
     private final FacultyRepository facultyRepository;
@@ -49,17 +51,23 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
     private final StudentCardRepository studentCardRepository;
     private final RoomRepository roomRepository;
 
+    private final ParentEntityRepository parentEntityRepository;
+    private final ChildEntityRepository childEntityRepository;
+
     public static void main(String[] args) {
         SpringApplication.run(EspielSpringDataJpaApplication.class, args);
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         populateMainTestData();
         populateRelationshipsTestData();
+        testLazyFetchWithOneParentEntity();
+        testLazyFetchWithMultipleParentEntity();
     }
 
     private void populateMainTestData() {
+        log.info("START: populateMainTestData");
         Faculty faculty1 = new Faculty("History", null);
         Faculty faculty2 = new Faculty("Maths", null);
         Faculty faculty3 = new Faculty("Tourism", null);
@@ -99,8 +107,8 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         staff8 = staffRepository.save(staff8);
     }
 
-    @Transactional
-    void populateRelationshipsTestData() {
+    private void populateRelationshipsTestData() {
+        log.info("START: populateRelationshipsTestData");
         try {
             // populate teachers
             PhoneNumber fakePhoneNumber = new PhoneNumber("+998", "98-765-43-21");
@@ -171,15 +179,72 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
             );
             courses = (List<Course>) courseRepository.saveAll(courses);
 
-            // print out all persisted data
-            teacherRepository.findAll().forEach(teacher -> log.info(teacher.toString()));
-            roomRepository.findAll().forEach(room -> log.info(room.toString()));
-            studentRepository.findAll().forEach(student -> log.info(student.toString()));
-            studentCardRepository.findAll().forEach(studentCard -> log.info(studentCard.toString()));
-            bookRepository.findAll().forEach(book -> log.info(book.toString()));
-            courseRepository.findAll().forEach(course -> log.info(course.toString()));
+            printAllPersistedData();
+
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
+    }
+
+    private void printAllPersistedData() {
+        teacherRepository.findAll().forEach(teacher -> log.info(teacher.toString()));
+        roomRepository.findAll().forEach(room -> log.info(room.toString()));
+        studentRepository.findAll().forEach(student -> log.info(student.toString()));
+        studentCardRepository.findAll().forEach(studentCard -> log.info(studentCard.toString()));
+        bookRepository.findAll().forEach(book -> log.info(book.toString()));
+        courseRepository.findAll().forEach(course -> log.info(course.toString()));
+    }
+
+    private void testLazyFetchWithOneParentEntity() {
+        log.info("START: testLazyFetchWithOneParentEntity");
+        childEntityRepository.deleteAll();
+        parentEntityRepository.deleteAll();
+        //persist all testing data
+        ParentEntity parent = new ParentEntity(0, "test parent", Collections.emptySet());
+        parent = parentEntityRepository.save(parent);
+        ChildEntity child1 = new ChildEntity(0, "test child 1", parent);
+        child1 = childEntityRepository.save(child1);
+        ChildEntity child2 = new ChildEntity(0, "test child 2", parent);
+        child2 = childEntityRepository.save(child2);
+
+        //eager fetch parent from child
+        ChildEntity fetchedChild = childEntityRepository.findById(child1.getId()).orElse(new ChildEntity());
+        log.info("child name: " + fetchedChild.getName());
+        log.info("parent title: " + fetchedChild.getParent().getTitle());
+
+        //lazy fetch children from parent
+        ParentEntity fetchedParent = parentEntityRepository.findById(parent.getId()).orElse(new ParentEntity());
+        log.info("parent title: " + fetchedParent.getTitle());
+        log.info("children size: " + fetchedParent.getChildren().size());
+    }
+
+    private void testLazyFetchWithMultipleParentEntity() {
+        log.info("START: testLazyFetchWithMultipleParentEntity");
+        childEntityRepository.deleteAll();
+        parentEntityRepository.deleteAll();
+        //persist all testing data
+        ParentEntity parent1 = new ParentEntity(0, "test parent 1", Collections.emptySet());
+        parent1 = parentEntityRepository.save(parent1);
+        ParentEntity parent2 = new ParentEntity(0, "test parent 2", Collections.emptySet());
+        parent2 = parentEntityRepository.save(parent2);
+        ChildEntity child1 = new ChildEntity(0, "test child 1", parent1);
+        child1 = childEntityRepository.save(child1);
+        ChildEntity child2 = new ChildEntity(0, "test child 2", parent1);
+        child2 = childEntityRepository.save(child2);
+        ChildEntity child3 = new ChildEntity(0, "test child 3", parent1);
+        child3 = childEntityRepository.save(child3);
+        ChildEntity child4 = new ChildEntity(0, "test child 4", parent2);
+        child4 = childEntityRepository.save(child4);
+
+        //lazy fetch children from parent (multiple parents with forEach loop) (maybe n+1 problem)
+        List<ParentEntity> fetchedParentsList = parentEntityRepository.findAll();
+        log.info("parents size: " + fetchedParentsList.size());
+        fetchedParentsList.forEach(parent -> log.info("parent title: " + parent.getTitle()));
+
+        fetchedParentsList.forEach(parent -> {
+            Set<ChildEntity> children = parent.getChildren();
+            log.info("children size: " + children.size());
+            children.forEach(child -> log.info("child name: " + child.getName()));
+        });
     }
 }
