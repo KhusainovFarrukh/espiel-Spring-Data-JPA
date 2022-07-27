@@ -15,7 +15,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@Proxy(lazy = false)
 public class ParentEntity {
 
     @Id

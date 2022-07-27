@@ -18,7 +18,6 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-@Proxy(lazy = false)
 public class Course {
 
     @Id
@@ -82,7 +81,10 @@ public class Course {
      * 5. @Proxy(lazy=false) (https://stackoverflow.com/a/39372379/18366962)
      * NOT WORKED
      * <p>
-     * 6. https://stackoverflow.com/a/57030407/18366962
+     * 6. DTO projection (https://stackoverflow.com/a/57030407/18366962)
+     * MAYBE GOOD SOLUTION FOR SOME CASES, BUT NOT COMPATIBLE WITH CURRENT DAO (REPO) LAYER IMPLEMENTATION
+     * AND NEEDS MORE EXTRA CODE
+     * <p>
      * 7. https://stackoverflow.com/a/69611021/18366962
      * 8. Idea: custom method in repo
      * 9. search for other possible solutions
