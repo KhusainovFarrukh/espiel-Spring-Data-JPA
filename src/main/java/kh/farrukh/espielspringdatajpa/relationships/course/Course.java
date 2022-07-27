@@ -63,6 +63,13 @@ public class Course {
 
     /**
      * todo fix FetchType.LAZY: no Session exception
+     * !!!
+     * There are only 2 good solutions to this problem:
+     * <p>
+     * 1. You initialize all required associations when you load the entity using a LEFT JOIN FETCH clause
+     * or a @NamedEntityGraph or the EntityGraph API.
+     * 2. You use a DTO projection instead of entities. DTOs don’t support lazy loading, and you need
+     * to fetch all required information within your service layer.
      * <p>
      * Possible solutions:
      * 1. Transactional annotation (https://stackoverflow.com/a/32276916/18366962)
@@ -85,12 +92,16 @@ public class Course {
      * MAYBE GOOD SOLUTION FOR SOME CASES, BUT NOT COMPATIBLE WITH CURRENT DAO (REPO) LAYER IMPLEMENTATION
      * AND NEEDS MORE EXTRA CODE
      * <p>
-     * 7. https://stackoverflow.com/a/69611021/18366962
-     * 8. Idea: custom method in repo
-     * 9. search for other possible solutions
-     * 10. ask communities for other possible solutions
+     * 7. EntityGraphApi (https://stackoverflow.com/a/69611021/18366962)
+     * GOOD FOR PERFORMANCE, BUT NEEDS MANUAL SQL QUERY AND MORE EXTRA CODE
      * <p>
+     * 8. Idea: custom method in repo: looks like solution-6 (DTO projection)
      * <p>
+     * 9. search for other possible solutions: currently it is all, imho
+     * <p>
+     * 10. ask communities for other possible solutions: most advised is solution-2 (enable_lazy_load_no_trans=true)
+     * <p>
+     * ADDITIONAL INFO:
      * https://www.baeldung.com/hibernate-initialize-proxy-exception
      * https://thorben-janssen.com/lazyinitializationexception/
      * https://javarevisited.blogspot.com/2014/04/orghibernatelazyinitializationException-Could-not-initialize-proxy-no-session-hibernate-java.html
