@@ -3,6 +3,7 @@ package kh.farrukh.espielspringdatajpa.relationships.course;
 import kh.farrukh.espielspringdatajpa.relationships.book.Book;
 import kh.farrukh.espielspringdatajpa.relationships.teacher.Teacher;
 import lombok.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -12,11 +13,12 @@ import java.util.Set;
         name = "courses",
         uniqueConstraints = {@UniqueConstraint(name = "course_title_unique_key", columnNames = "title")}
 )
+@Transactional
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+//@ToString
 public class Course {
 
     @Id
@@ -57,13 +59,16 @@ public class Course {
      * <p>
      * todo more about cascade
      */
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Book> books;
     /**
      * todo fix FetchType.LAZY: no Session exception
      *
      * Possible solutions:
-     * 1. https://stackoverflow.com/a/32276916/18366962
+     * 1. Transactional annotation (https://stackoverflow.com/a/32276916/18366962)
+     * NOT WORKED
+     *
+     *
      * 2. https://stackoverflow.com/a/50882857/18366962
      * 3. https://stackoverflow.com/a/21575368/18366962
      * 4. https://stackoverflow.com/a/39465150/18366962
@@ -81,4 +86,15 @@ public class Course {
      * https://qna.habr.com/q/564704
      * https://blog.frankel.ch/guide-lazyinitializationexception/
      */
+    @Override
+    @Transactional
+    public String toString() {
+        return "Course{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", teacher=" + teacher +
+                ", books=" + getBooks() +
+                '}';
+    }
 }

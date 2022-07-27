@@ -26,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -33,6 +35,7 @@ import java.util.Set;
 @SpringBootApplication
 @RequiredArgsConstructor
 @Slf4j
+@EnableTransactionManagement
 public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
     private final FacultyRepository facultyRepository;
@@ -96,7 +99,8 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         staff8 = staffRepository.save(staff8);
     }
 
-    private void populateRelationshipsTestData() {
+    @Transactional
+    void populateRelationshipsTestData() {
         try {
             // populate teachers
             PhoneNumber fakePhoneNumber = new PhoneNumber("+998", "98-765-43-21");
