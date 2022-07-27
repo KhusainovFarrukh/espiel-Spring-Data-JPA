@@ -11,6 +11,14 @@ todos
 https://www.baeldung.com/jpa-cascade-types
 https://www.scaler.com/topics/sql/cascade-in-sql/
 
+!!! IN SPRING DATA: owning-side of relationships is which contains foreign key column. non-owning-side is the one which
+    have mappedBy in the annotation
+!!! BUT, IN SQL: If the table contains a foreign key then this table will be called a child table. And if a table 
+    contains the primary key (not foreign key) then it will be called a parent table for reference table.
+!!! In cascading: from parent entity to child entity means that ->
+    1. from non-owning side of relationship to owning-side
+    2. from parent table to child table
+
 CASCADE - Cascade in SQL is used to delete or update an entry from both the child and the parent table simultaneously.
 The keyword CASCADE is used as conjunction while writing the query of ON DELETE or ON UPDATE. When a cascade keyword 
 is added while writing a query for a parent table, then both the parent and child table get changed accordingly.
