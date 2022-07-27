@@ -22,6 +22,7 @@ public class ParentEntity {
 
     private String title;
 
-    @OneToMany(mappedBy = "parent")
+    // TODO: 7/28/22 about orphanRemoval
+    @OneToMany(mappedBy = "parent", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Set<ChildEntity> children;
 }

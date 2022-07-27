@@ -64,7 +64,8 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         populateRelationshipsTestData();
         testLazyFetchWithOneParentEntity();
         testLazyFetchWithMultipleParentEntity();
-        testCascadeTypeOnParentDelete();
+        testCascadeTypePersist();
+        testCascadeTypeRemove();
     }
 
     private void populateMainTestData() {
@@ -251,18 +252,36 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         });
     }
 
-    private void testCascadeTypeOnParentDelete() {
+    private void testCascadeTypePersist() {
         childEntityRepository.deleteAll();
         parentEntityRepository.deleteAll();
-        log.info("START: testCascadeType");
+        log.info("START: testCascadeTypePersist");
 
         // persist all testing data
         ParentEntity parent = new ParentEntity(0, "test parent", Collections.emptySet());
+        ChildEntity child = new ChildEntity(0, "test child", null);
+        parent.setChildren(Set.of(child));
+        child.setParent(parent);
         parent = parentEntityRepository.save(parent);
-        ChildEntity child = new ChildEntity(0, "test child", parent);
-        child = childEntityRepository.save(child);
+
+        log.info("parent title: " + parentEntityRepository.findById(parent.getId()).orElse(new ParentEntity()).getTitle());
+        log.info("child name: " + childEntityRepository.findById(child.getId()).orElse(new ChildEntity()).getName());
+    }
+
+    private void testCascadeTypeRemove() {
+        childEntityRepository.deleteAll();
+        parentEntityRepository.deleteAll();
+        log.info("START: testCascadeTypeRemove");
+
+        // persist all testing data
+        ParentEntity parent = new ParentEntity(0, "test parent", Collections.emptySet());
+        ChildEntity child = new ChildEntity(0, "test child", null);
+        parent.setChildren(Set.of(child));
+        child.setParent(parent);
+        parent = parentEntityRepository.save(parent);
 
         parentEntityRepository.delete(parent);
+
         log.info("parents size: " + parentEntityRepository.findAll().size());
         log.info("children size: " + childEntityRepository.findAll().size());
     }
