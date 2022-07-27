@@ -4,9 +4,11 @@ todos
 
 1. V learn about cascade in db
 2. V learn about cascade type in spring
-3. practice with each cascade type
-4. orphanRemoval
-5. write cascade.md
+3. thorben janssen: persist, save, merge, ... operations
+4. practice with each cascade type
+5. thorben janssen: do not use CascadeType.REMOVE
+6. orphanRemoval
+7. write cascade.md
 
 https://www.baeldung.com/jpa-cascade-types
 https://www.scaler.com/topics/sql/cascade-in-sql/
