@@ -1,9 +1,9 @@
 package kh.farrukh.espielspringdatajpa;
 
-import kh.farrukh.espielspringdatajpa.fetch_type.ChildEntity;
-import kh.farrukh.espielspringdatajpa.fetch_type.ChildEntityRepository;
-import kh.farrukh.espielspringdatajpa.fetch_type.ParentEntity;
-import kh.farrukh.espielspringdatajpa.fetch_type.ParentEntityRepository;
+import kh.farrukh.espielspringdatajpa.fetch_type_and_cascade.ChildEntity;
+import kh.farrukh.espielspringdatajpa.fetch_type_and_cascade.ChildEntityRepository;
+import kh.farrukh.espielspringdatajpa.fetch_type_and_cascade.ParentEntity;
+import kh.farrukh.espielspringdatajpa.fetch_type_and_cascade.ParentEntityRepository;
 import kh.farrukh.espielspringdatajpa.main.endpoints.department.Department;
 import kh.farrukh.espielspringdatajpa.main.endpoints.department.DepartmentRepository;
 import kh.farrukh.espielspringdatajpa.main.endpoints.faculty.Faculty;

@@ -1,28 +1,27 @@
-package kh.farrukh.espielspringdatajpa.fetch_type;
+package kh.farrukh.espielspringdatajpa.fetch_type_and_cascade;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
-@Table(name = "fetch_parent_entity")
+@Table(name = "fetch_child_entity")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class ParentEntity {
+public class ChildEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String title;
+    private String name;
 
-    @OneToMany(mappedBy = "parent")
-    private Set<ChildEntity> children;
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private ParentEntity parent;
 }

@@ -1,4 +1,4 @@
-package kh.farrukh.espielspringdatajpa.fetch_type;
+package kh.farrukh.espielspringdatajpa.fetch_type_and_cascade;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
