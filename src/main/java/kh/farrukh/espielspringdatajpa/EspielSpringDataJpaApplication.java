@@ -64,6 +64,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         populateRelationshipsTestData();
         testLazyFetchWithOneParentEntity();
         testLazyFetchWithMultipleParentEntity();
+        testCascadeTypeOnParentDelete();
     }
 
     private void populateMainTestData() {
@@ -199,6 +200,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         log.info("START: testLazyFetchWithOneParentEntity");
         childEntityRepository.deleteAll();
         parentEntityRepository.deleteAll();
+
         //persist all testing data
         ParentEntity parent = new ParentEntity(0, "test parent", Collections.emptySet());
         parent = parentEntityRepository.save(parent);
@@ -222,6 +224,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         log.info("START: testLazyFetchWithMultipleParentEntity");
         childEntityRepository.deleteAll();
         parentEntityRepository.deleteAll();
+
         //persist all testing data
         ParentEntity parent1 = new ParentEntity(0, "test parent 1", Collections.emptySet());
         parent1 = parentEntityRepository.save(parent1);
@@ -246,5 +249,21 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
             log.info("children size: " + children.size());
             children.forEach(child -> log.info("child name: " + child.getName()));
         });
+    }
+
+    private void testCascadeTypeOnParentDelete() {
+        childEntityRepository.deleteAll();
+        parentEntityRepository.deleteAll();
+        log.info("START: testCascadeType");
+
+        // persist all testing data
+        ParentEntity parent = new ParentEntity(0, "test parent", Collections.emptySet());
+        parent = parentEntityRepository.save(parent);
+        ChildEntity child = new ChildEntity(0, "test child", parent);
+        child = childEntityRepository.save(child);
+
+        parentEntityRepository.delete(parent);
+        log.info("parents size: " + parentEntityRepository.findAll().size());
+        log.info("children size: " + childEntityRepository.findAll().size());
     }
 }
