@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -14,6 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@Proxy(lazy = false)
 public class ParentEntity {
 
     @Id

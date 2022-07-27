@@ -3,6 +3,7 @@ package kh.farrukh.espielspringdatajpa.relationships.course;
 import kh.farrukh.espielspringdatajpa.relationships.book.Book;
 import kh.farrukh.espielspringdatajpa.relationships.teacher.Teacher;
 import lombok.*;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -17,6 +18,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
+@Proxy(lazy = false)
 public class Course {
 
     @Id
@@ -69,10 +71,17 @@ public class Course {
      * <p>
      * 2. enable_lazy_load_no_trans=true (https://stackoverflow.com/a/50882857/18366962)
      * WORKED
+     * todo discuss about it: https://stackoverflow.com/a/39723223/18366962
      * <p>
-     * 3. https://stackoverflow.com/a/21575368/18366962
-     * 4. https://stackoverflow.com/a/39465150/18366962
-     * 5. https://stackoverflow.com/a/39372379/18366962
+     * 3. current_session_context_class (https://stackoverflow.com/a/21575368/18366962)
+     * NOT APPLICABLE
+     * <p>
+     * 4. JOIN FETCH (https://stackoverflow.com/a/39465150/18366962)
+     * PROBABLY WORKS, BUT VERY MANUAL (needs writing sql query)
+     * <p>
+     * 5. @Proxy(lazy=false) (https://stackoverflow.com/a/39372379/18366962)
+     * NOT WORKED
+     * <p>
      * 6. https://stackoverflow.com/a/57030407/18366962
      * 7. https://stackoverflow.com/a/69611021/18366962
      * 8. Idea: custom method in repo
