@@ -60,6 +60,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        // TODO: 7/28/22 write tests for each situation
         populateMainTestData();
         populateRelationshipsTestData();
         testLazyFetchWithOneParentEntity();

@@ -23,13 +23,6 @@ public class ParentEntity {
     private String title;
 
     // TODO: 7/28/22 about orphanRemoval
-    @OneToMany(
-            mappedBy = "parent",
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.REMOVE,
-                    CascadeType.MERGE
-            }
-    )
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private Set<ChildEntity> children;
 }
