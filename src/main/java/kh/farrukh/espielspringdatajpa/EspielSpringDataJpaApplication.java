@@ -40,6 +40,10 @@ import java.util.Set;
 @Slf4j
 public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
+    // TODO: read more about transactions: https://www.baeldung.com/transaction-configuration-with-jpa-and-spring
+    // TODO: can readOnly=true @Transactional marked method write to db (before&after spring 5.1/4.1)
+    // TODO: more about other attributes of @Transactional
+
     private final FacultyRepository facultyRepository;
     private final DepartmentRepository departmentRepository;
     private final StaffRepository staffRepository;
