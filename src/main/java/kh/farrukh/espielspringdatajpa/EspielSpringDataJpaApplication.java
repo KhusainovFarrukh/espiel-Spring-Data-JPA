@@ -66,6 +66,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         testLazyFetchWithMultipleParentEntity();
         testCascadeTypePersist();
         testCascadeTypeRemove();
+        testCascadeTypeMerge();
     }
 
     private void populateMainTestData() {
@@ -284,5 +285,27 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
         log.info("parents size: " + parentEntityRepository.findAll().size());
         log.info("children size: " + childEntityRepository.findAll().size());
+    }
+
+    private void testCascadeTypeMerge() {
+        childEntityRepository.deleteAll();
+        parentEntityRepository.deleteAll();
+        log.info("START: testCascadeTypeMerge");
+
+        // persist all testing data
+        ParentEntity parent = new ParentEntity(0, "test parent", Collections.emptySet());
+        ChildEntity child = new ChildEntity(0, "test child", null);
+        parent.setChildren(Set.of(child));
+        child.setParent(parent);
+        parent = parentEntityRepository.save(parent);
+
+        ParentEntity fetchedParent = parentEntityRepository.findById(parent.getId()).orElse(new ParentEntity());
+        Set<ChildEntity> fetchedChildren = fetchedParent.getChildren();
+        fetchedParent.setTitle(fetchedParent.getTitle() + " updated");
+        fetchedChildren.forEach(childItem -> childItem.setName(childItem.getName() + " updated"));
+        fetchedParent = parentEntityRepository.save(fetchedParent);
+
+        log.info("parent title: " + parentEntityRepository.findById(parent.getId()).orElse(new ParentEntity()).getTitle());
+        log.info("child name: " + childEntityRepository.findById(child.getId()).orElse(new ChildEntity()).getName());
     }
 }

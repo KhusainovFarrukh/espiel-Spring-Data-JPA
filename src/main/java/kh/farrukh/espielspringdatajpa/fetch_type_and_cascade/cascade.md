@@ -10,8 +10,11 @@ todos
 6. orphanRemoval
 7. write cascade.md
 
+https://www.youtube.com/watch?v=SH29O-bcQlc&t
 https://www.scaler.com/topics/sql/cascade-in-sql/
 https://www.baeldung.com/jpa-cascade-types
+https://www.youtube.com/watch?v=GFy8dJNCRcY
+https://www.youtube.com/watch?v=Jmcord4_ghY
 
 !!! IN SPRING DATA: owning-side of relationships is which contains foreign key column. non-owning-side is the one which
     have mappedBy in the annotation
