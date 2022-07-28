@@ -16,6 +16,8 @@ import javax.persistence.*;
 @ToString(exclude = "card")
 public class Student {
 
+    // TODO: 7/28/22 composite primary key for enrolment
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_id_generator")
     @SequenceGenerator(name = "student_id_generator", sequenceName = "student_id_sequence")

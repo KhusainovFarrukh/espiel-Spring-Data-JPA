@@ -3,7 +3,6 @@ package kh.farrukh.espielspringdatajpa.relationships.course;
 import kh.farrukh.espielspringdatajpa.relationships.book.Book;
 import kh.farrukh.espielspringdatajpa.relationships.teacher.Teacher;
 import lombok.*;
-import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -56,13 +55,12 @@ public class Course {
      * <p>
      * mappedBy - The field that owns the relationship. Required unless the relationship is unidirectional.
      * <p>
-     * todo more about cascade
      */
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Book> books;
 
     /**
-     * todo fix FetchType.LAZY: no Session exception
+     * FetchType.LAZY: no Session exception
      * !!!
      * There are only 2 good solutions to this problem:
      * <p>

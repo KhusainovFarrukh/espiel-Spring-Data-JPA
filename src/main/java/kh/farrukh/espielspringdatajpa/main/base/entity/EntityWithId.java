@@ -23,9 +23,9 @@ public abstract class EntityWithId {
     public static final String ID_GENERATOR = "id_generator";
 
     /**
-     * todo what does it mean
      * The use of the GeneratedValue annotation is only required to be supported for simple primary keys.
      * Use of the GeneratedValue annotation is not supported for derived primary keys.
+     * For derived (composite) primary keys, read: https://attacomsian.com/blog/spring-data-jpa-composite-primary-key
      * <p/>
      * GenerationTypes (https://www.youtube.com/watch?v=qn9SbW44rQ8)
      * AUTO - selects preferred generation strategy depending on db dialect.
@@ -36,12 +36,12 @@ public abstract class EntityWithId {
      * SEQUENCE - most optimized strategy. Uses sequence database type (not table) to
      * generate ids. Optimized also with batching (JDBC batching) and other features.
      * Best option to use, if DB supports it.
+     * For batching, read: https://www.baeldung.com/spring-data-jpa-batch-inserts
      * Additional: to use SEQUENCE with EntityWithId (MappedSuperclass), set strategy to
      * sequence, and annotate each entity subclass with @SequenceGenerator and create separate sequences.
      * Else there will be one sequence for all entities, it is very bad
      * TABLE - worst option, simulation of sequence for using when DB does not support
      * sequence database type. Slowest one.
-     * todo what is batching
      */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = ID_GENERATOR)

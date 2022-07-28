@@ -25,7 +25,10 @@ public class StudentCard {
     /**
      * JoinColumn is not required here. It is only for customization
      *
-     * todo more about JoinColumn
+     * Specifies a column for joining an entity association or element
+     * collection. If the JoinColumn annotation itself is
+     * defaulted, a single join column is assumed and the default values
+     * apply.
      */
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student owner;
