@@ -1,13 +1,5 @@
 Transactions (@Transactional)
 
-todos
-
-1. V thorben janssen videos/articles
-2. what is distributed transactions
-3. docs/comments in annotations
-4. complete transactions.md
-
-
 https://www.youtube.com/watch?v=SUQxXg229Xg
 https://www.baeldung.com/transaction-configuration-with-jpa-and-spring
 
