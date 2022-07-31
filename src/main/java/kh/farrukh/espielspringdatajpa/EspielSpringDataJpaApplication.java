@@ -229,6 +229,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         bookRepository.findAll().forEach(book -> log.info(book.toString()));
         courseRepository.findAll().forEach(course -> log.info(course.toString()));
         enrolmentRepository.findAll().forEach(enrolment -> log.info(enrolment.toString()));
+        countryRepository.findAll().forEach(country -> log.info(country.toString()));
     }
 
     private void testLazyFetchWithOneParentEntity() {

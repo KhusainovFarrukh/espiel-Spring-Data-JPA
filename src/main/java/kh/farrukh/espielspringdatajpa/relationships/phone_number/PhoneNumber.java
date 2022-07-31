@@ -16,13 +16,12 @@ import javax.persistence.ManyToOne;
 @ToString
 public class PhoneNumber {
 
-    // TODO: 7/26/22 using n-to-m relationships inside embeddable class
-
     @Column(columnDefinition = "TEXT")
     private String countryCode;
     @Column(columnDefinition = "TEXT")
     private String localNumber;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "pn_country_id")
     private Country country;

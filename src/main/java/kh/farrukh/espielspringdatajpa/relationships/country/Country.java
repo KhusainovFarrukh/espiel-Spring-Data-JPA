@@ -1,8 +1,10 @@
 package kh.farrukh.espielspringdatajpa.relationships.country;
 
+import kh.farrukh.espielspringdatajpa.relationships.student.Student;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "countries")
@@ -19,4 +21,12 @@ public class Country {
     private long id;
 
     private String name;
+
+    @OneToMany(mappedBy = "phoneNumber.country")
+    private Set<Student> students;
+
+    public Country(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }
