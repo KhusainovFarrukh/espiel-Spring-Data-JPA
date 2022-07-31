@@ -27,6 +27,7 @@ import kh.farrukh.espielspringdatajpa.relationships.teacher.Teacher;
 import kh.farrukh.espielspringdatajpa.relationships.teacher.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -72,6 +73,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         testCascadeTypePersist();
         testCascadeTypeRemove();
         testCascadeTypeMerge();
+        testOrphanRemoval();
     }
 
     private void populateMainTestData() {
@@ -312,5 +314,29 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
         log.info("parent title: " + parentEntityRepository.findById(parent.getId()).orElse(new ParentEntity()).getTitle());
         log.info("child name: " + childEntityRepository.findById(child.getId()).orElse(new ChildEntity()).getName());
+    }
+
+    private void testOrphanRemoval() {
+        childEntityRepository.deleteAll();
+        parentEntityRepository.deleteAll();
+        log.info("START: testOrphanRemoval");
+
+        // persist all testing data
+        ChildEntity child = new ChildEntity(0, "test child", null);
+
+        ParentEntity parent1 = new ParentEntity(0, "test parent 1", Collections.emptySet());
+        parent1.setChildren(Set.of(child));
+        child.setParent(parent1);
+        parent1 = parentEntityRepository.saveAndFlush(parent1);
+
+        log.info("parents size before: " + parentEntityRepository.findAll().size());
+        log.info("children size before: " + childEntityRepository.findAll().size());
+
+        parent1.setChildren(Collections.emptySet());
+        child.setParent(null);
+        parent1 = parentEntityRepository.saveAndFlush(parent1);
+
+        log.info("parents size after: " + parentEntityRepository.findAll().size());
+        log.info("children size after: " + childEntityRepository.findAll().size());
     }
 }

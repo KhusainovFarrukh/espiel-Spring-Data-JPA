@@ -22,7 +22,20 @@ public class ParentEntity {
 
     private String title;
 
-    // TODO: 7/28/22 about orphanRemoval
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    /**
+     * orphanRemoval - As stated earlier, its usage is to delete orphaned entities from the database.
+     * An entity that is no longer attached to its parent is the definition of being an orphan.
+     * <p>
+     * In our case, an OrderRequest has a collection of LineItem objects where we use the @OneToMany
+     * annotation to identify the relationship. This is where we also set the orphanRemoval attribute
+     * to true. To detach a LineItem from an OrderRequest, we can use the removeLineItem method that
+     * we previously created.
+     * <p>
+     * With everything in place, once we use the removeLineItem method and save the OrderRequest,
+     * the deletion of the orphaned LineItem from the database should happen.
+     * <p>
+     * READ MORE: https://www.baeldung.com/jpa-cascade-remove-vs-orphanremoval
+     */
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ChildEntity> children;
 }
