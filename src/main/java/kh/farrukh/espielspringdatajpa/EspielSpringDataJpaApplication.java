@@ -80,6 +80,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         testCascadeTypeRemove();
         testCascadeTypeMerge();
         testOrphanRemoval();
+        testEntityGraph();
     }
 
     private void populateMainTestData() {
@@ -365,5 +366,25 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
         log.info("parents size after: " + parentEntityRepository.findAll().size());
         log.info("children size after: " + childEntityRepository.findAll().size());
+    }
+
+    private void testEntityGraph() {
+        log.info("START: testEntityGraph");
+        childEntityRepository.deleteAll();
+        parentEntityRepository.deleteAll();
+
+        //persist all testing data
+        ParentEntity parent = new ParentEntity(0, "test parent", Collections.emptySet());
+        parent = parentEntityRepository.save(parent);
+        ChildEntity child1 = new ChildEntity(0, "test child 1", parent);
+        child1 = childEntityRepository.save(child1);
+        ChildEntity child2 = new ChildEntity(0, "test child 2", parent);
+        child2 = childEntityRepository.save(child2);
+
+        //fetch using entity graph
+        parentEntityRepository.findAllWithChildren().forEach(parentEntity -> {
+            log.info("parent title: " + parentEntity.getTitle());
+            parentEntity.getChildren().forEach(child -> log.info("child name: " + child.getName()));
+        });
     }
 }

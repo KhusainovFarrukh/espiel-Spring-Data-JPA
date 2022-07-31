@@ -14,6 +14,19 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+/**
+ * NamedEntityGraph - Used to specify the path and boundaries for a find operation or query.
+ * name - The name of the entity graph. Defaults to the entity name of the root entity.
+ * attributeNodes - A list of attributes of the entity that are included in this graph.
+ * includeAllAttributes - Includes all of the attributes of the annotated entity class as attribute nodes in
+ * the NamedEntityGraph without the need to explicitly list them. Included attributes can still be fully specified
+ * by an attribute node referencing a subgraph.
+ * subgraphs - A list of subgraphs that are included in the entity graph. These are referenced by name
+ * from NamedAttributeNode definitions
+ * subclassSubgraphs - A list of subgraphs that will add additional attributes for subclasses of the annotated entity
+ * class to the entity graph. Specified attributes from superclasses are included in subclasses.
+ */
+@NamedEntityGraph(name = "parent_with_children", attributeNodes = @NamedAttributeNode(value = "children"))
 public class ParentEntity {
 
     @Id
