@@ -16,6 +16,9 @@ import kh.farrukh.espielspringdatajpa.relationships.book.Book;
 import kh.farrukh.espielspringdatajpa.relationships.book.BookRepository;
 import kh.farrukh.espielspringdatajpa.relationships.course.Course;
 import kh.farrukh.espielspringdatajpa.relationships.course.CourseRepository;
+import kh.farrukh.espielspringdatajpa.relationships.enrolment.Enrolment;
+import kh.farrukh.espielspringdatajpa.relationships.enrolment.EnrolmentRepository;
+import kh.farrukh.espielspringdatajpa.relationships.enrolment.EnrolmentType;
 import kh.farrukh.espielspringdatajpa.relationships.phone_number.PhoneNumber;
 import kh.farrukh.espielspringdatajpa.relationships.room.Room;
 import kh.farrukh.espielspringdatajpa.relationships.room.RoomRepository;
@@ -27,7 +30,6 @@ import kh.farrukh.espielspringdatajpa.relationships.teacher.Teacher;
 import kh.farrukh.espielspringdatajpa.relationships.teacher.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -55,6 +57,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
     private final StudentRepository studentRepository;
     private final StudentCardRepository studentCardRepository;
     private final RoomRepository roomRepository;
+    private final EnrolmentRepository enrolmentRepository;
 
     private final ParentEntityRepository parentEntityRepository;
     private final ChildEntityRepository childEntityRepository;
@@ -189,6 +192,17 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
             );
             courses = (List<Course>) courseRepository.saveAll(courses);
 
+            // populate enrolments
+            List<Enrolment> enrolments = List.of(
+                    new Enrolment(students.get(0), courses.get(0), EnrolmentType.FREE),
+                    new Enrolment(students.get(0), courses.get(1), EnrolmentType.PAID),
+                    new Enrolment(students.get(0), courses.get(2), EnrolmentType.TRIAL),
+                    new Enrolment(students.get(1), courses.get(2), EnrolmentType.PAID),
+                    new Enrolment(students.get(2), courses.get(2), EnrolmentType.PAID)
+            );
+
+            enrolments = enrolmentRepository.saveAll(enrolments);
+
             printAllPersistedData();
 
         } catch (RuntimeException e) {
@@ -203,6 +217,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         studentCardRepository.findAll().forEach(studentCard -> log.info(studentCard.toString()));
         bookRepository.findAll().forEach(book -> log.info(book.toString()));
         courseRepository.findAll().forEach(course -> log.info(course.toString()));
+        enrolmentRepository.findAll().forEach(enrolment -> log.info(enrolment.toString()));
     }
 
     private void testLazyFetchWithOneParentEntity() {

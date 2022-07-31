@@ -1,10 +1,13 @@
 package kh.farrukh.espielspringdatajpa.relationships.course;
 
 import kh.farrukh.espielspringdatajpa.relationships.book.Book;
+import kh.farrukh.espielspringdatajpa.relationships.enrolment.Enrolment;
 import kh.farrukh.espielspringdatajpa.relationships.teacher.Teacher;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -59,6 +62,9 @@ public class Course {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Book> books;
 
+    @OneToMany(mappedBy = "course")
+    private List<Enrolment> enrolments = Collections.emptyList();
+
     /**
      * FetchType.LAZY: no Session exception
      * !!!
@@ -106,4 +112,12 @@ public class Course {
      * https://qna.habr.com/q/564704
      * https://blog.frankel.ch/guide-lazyinitializationexception/
      */
+
+    public Course(long id, String title, String description, Teacher teacher, Set<Book> books) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.teacher = teacher;
+        this.books = books;
+    }
 }

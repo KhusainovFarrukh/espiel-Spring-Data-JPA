@@ -1,11 +1,15 @@
 package kh.farrukh.espielspringdatajpa.relationships.student;
 
+import kh.farrukh.espielspringdatajpa.relationships.enrolment.Enrolment;
 import kh.farrukh.espielspringdatajpa.relationships.phone_number.PhoneNumber;
 import kh.farrukh.espielspringdatajpa.relationships.student_card.StudentCard;
 import kh.farrukh.espielspringdatajpa.relationships.teacher.Teacher;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "students")
@@ -13,10 +17,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString(exclude = "card")
+@ToString
 public class Student {
-
-    // TODO: 7/28/22 composite primary key for enrolment
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_id_generator")
@@ -46,7 +48,11 @@ public class Student {
      * But you can get StudentCard from Student and vice-versa.
      */
     @OneToOne(mappedBy = "owner", fetch = FetchType.EAGER)
+    @ToString.Exclude
     private StudentCard card;
+
+    @OneToMany(mappedBy = "student")
+    private List<Enrolment> enrolments = Collections.emptyList();
 
     public Student(long id, String firstName, String lastName, PhoneNumber phoneNumber, Teacher tutor) {
         this.id = id;
