@@ -14,6 +14,8 @@ import kh.farrukh.espielspringdatajpa.main.endpoints.staff.StaffRepository;
 import kh.farrukh.espielspringdatajpa.main.endpoints.staff.StaffRole;
 import kh.farrukh.espielspringdatajpa.relationships.book.Book;
 import kh.farrukh.espielspringdatajpa.relationships.book.BookRepository;
+import kh.farrukh.espielspringdatajpa.relationships.country.Country;
+import kh.farrukh.espielspringdatajpa.relationships.country.CountryRepository;
 import kh.farrukh.espielspringdatajpa.relationships.course.Course;
 import kh.farrukh.espielspringdatajpa.relationships.course.CourseRepository;
 import kh.farrukh.espielspringdatajpa.relationships.enrolment.Enrolment;
@@ -51,6 +53,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
     private final DepartmentRepository departmentRepository;
     private final StaffRepository staffRepository;
 
+    private final CountryRepository countryRepository;
     private final CourseRepository courseRepository;
     private final BookRepository bookRepository;
     private final TeacherRepository teacherRepository;
@@ -123,8 +126,16 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
     private void populateRelationshipsTestData() {
         log.info("START: populateRelationshipsTestData");
         try {
+            // populate countries
+            List<Country> countries = List.of(
+                    new Country(0, "Uzbekistan"),
+                    new Country(0, "Russia"),
+                    new Country(0, "China")
+            );
+            countries = countryRepository.saveAll(countries);
+
             // populate teachers
-            PhoneNumber fakePhoneNumber = new PhoneNumber("+998", "98-765-43-21");
+            PhoneNumber fakePhoneNumber = new PhoneNumber("+998", "98-765-43-21", countries.get(0));
             List<Teacher> teachers = List.of(
                     new Teacher(0, "John", "Smith", fakePhoneNumber),
                     new Teacher(0, "Alex", "Pride", fakePhoneNumber),

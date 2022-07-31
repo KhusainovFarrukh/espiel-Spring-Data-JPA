@@ -30,6 +30,10 @@ public class Student {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String lastName;
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "countryCode", column = @Column(name = "pn_country_code")),
+            @AttributeOverride(name = "localNumber", column = @Column(name = "pn_local_number"))
+    })
     private PhoneNumber phoneNumber;
 
     /**
