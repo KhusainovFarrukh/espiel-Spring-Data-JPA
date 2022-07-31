@@ -13,14 +13,10 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString
-@IdClass(EnrolmentId.class)
 public class Enrolment {
 
-    @Id
-    private long studentId;
-
-    @Id
-    private long courseId;
+    @EmbeddedId
+    private EnrolmentId id;
 
     @ManyToOne
     @ToString.Exclude
@@ -36,8 +32,7 @@ public class Enrolment {
     private EnrolmentType type;
 
     public Enrolment(Student student, Course course, EnrolmentType type) {
-        this.studentId = student.getId();
-        this.courseId = course.getId();
+        this.id = new EnrolmentId(student.getId(), course.getId());
         this.student = student;
         this.course = course;
         this.type = type;
