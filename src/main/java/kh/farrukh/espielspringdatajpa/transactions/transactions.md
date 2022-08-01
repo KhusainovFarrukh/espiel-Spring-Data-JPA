@@ -2,6 +2,7 @@ Transactions (@Transactional)
 
 https://www.youtube.com/watch?v=SUQxXg229Xg
 https://www.baeldung.com/transaction-configuration-with-jpa-and-spring
+https://www.baeldung.com/spring-transactions-read-only
 
 Spring’s transaction management is based on the transaction management provided by your database and the JDBC specification
 
@@ -75,3 +76,25 @@ Since Spring 5.1, this sets Hibernate’s query hint org.hibernate.readOnly and 
 rollbackFor - enables you to provide an array of Exception classes for which the transaction shall be rolled back. 
 
 noRollbackFor - accepts an array of Exception classes that shall not cause a rollback of the transaction.
+
+----------------------------------------------------------------------------
+
+Notes from https://www.baeldung.com/transaction-configuration-with-jpa-and-spring :
+
+1. If we're using a Spring Boot project and have a spring-data-* or spring-tx dependencies on the classpath, 
+then transaction management will be enabled by default.
+2. Note that by default, rollback happens for runtime, unchecked exceptions only. The checked exception does not 
+trigger a rollback of the transaction. We can, of course, configure this behavior with the rollbackFor and 
+noRollbackFor annotation parameters.
+3. What's important to keep in mind is that, if the transactional bean is implementing an interface, by default 
+the proxy will be a Java Dynamic Proxy. This means that only external method calls that come in through the proxy 
+will be intercepted. Any self-invocation calls will not start any transaction, even if the method has 
+the @Transactional annotation.
+4. Another caveat of using proxies is that only public methods should be annotated with @Transactional. 
+Methods of any other visibilities will simply ignore the annotation silently as these are not proxied
+5. The readOnly flag usually generates confusion, especially when working with JPA. From the Javadoc:
+"This just serves as a hint for the actual transaction subsystem; it will not necessarily cause failure of write access 
+attempts. A transaction manager which cannot interpret the read-only hint will not throw an exception when asked 
+for a read-only transaction"
+6. The fact is that we can't be sure that an insert or update won't occur when the readOnly flag is set. 
+This behavior is vendor dependent, whereas JPA is vendor agnostic.
