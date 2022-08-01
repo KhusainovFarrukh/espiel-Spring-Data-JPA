@@ -27,8 +27,15 @@ import javax.persistence.*;
  * It is best practice. Because setting unique property of @Column to true generates
  * unique key with random name
  *
- * todo what is catalog of table
- * todo what is index for table
+ * catalog - Catalogs are named collections of schemas in an SQL-environment. An SQL-environment contains zero
+ * or more catalogs. A catalog contains one or more schemas, but always contains a schema named INFORMATION_SCHEMA
+ * that contains the views and domains of the Information Schema
+ *
+ * index - A SQL index is used to retrieve data from a database very fast. Indexing a table or view is, without a doubt,
+ * one of the best ways to improve the performance of queries and applications. A SQL index is a quick lookup table for
+ * finding records users need to search frequently. It is very useful for connecting the relational tables and
+ * searching large tables.
+ * more about index: https://www.sqlshack.com/sql-index-overview-and-strategy/
  */
 @Table(name = "faculties")
 @Getter
@@ -50,8 +57,21 @@ public class Faculty extends EntityWithId {
      * insertable/updatable - if set to false, insert/update won't work on db layer (table).
      * But repository.save(entity) will return entity like inserted/updated
      * <p/>
-     * todo what can columnDefinition do
-     * todo what is precision/scale
+     * columnDefinition - The SQL fragment that is used when generating the DDL for the column.
+     * For example, to create a default value (or describing sql type of column, and for other works)
+     * directly in the SQL table definition, we can use the columnDefinition parameter.
+     * https://www.baeldung.com/jpa-default-column-values
+     * https://stackoverflow.com/a/17482163/18366962
+     * <p>
+     * length - (Optional) The column length. (Applies only if a string-valued column is used.)
+     * <p>
+     * precision - (Optional) The precision for a decimal (exact numeric) column.
+     * (Applies only if a decimal column is used.)
+     * <p>
+     * scale - (Optional) The scale for a decimal (exact numeric) column.
+     * (Applies only if a decimal column is used.)
+     * <p>
+     * https://stackoverflow.com/a/4084093/18366962
      */
     @Column(nullable = false, columnDefinition = "TEXT")
     private String name;
