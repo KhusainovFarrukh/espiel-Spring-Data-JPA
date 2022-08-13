@@ -5,6 +5,10 @@ import kh.farrukh.espielspringdatajpa.fetch_type_and_cascade.ChildEntityReposito
 import kh.farrukh.espielspringdatajpa.fetch_type_and_cascade.ParentEntity;
 import kh.farrukh.espielspringdatajpa.fetch_type_and_cascade.ParentEntityRepository;
 import kh.farrukh.espielspringdatajpa.jpa_specification.*;
+import kh.farrukh.espielspringdatajpa.jpa_specification.custom_specifications.ArticleHasAuthorsSpecification;
+import kh.farrukh.espielspringdatajpa.jpa_specification.custom_specifications.ArticleHasTagsSpecification;
+import kh.farrukh.espielspringdatajpa.jpa_specification.custom_specifications.ArticleMaxPublishedYearSpecification;
+import kh.farrukh.espielspringdatajpa.jpa_specification.custom_specifications.ArticleMinPublishedYearSpecification;
 import kh.farrukh.espielspringdatajpa.main.endpoints.department.Department;
 import kh.farrukh.espielspringdatajpa.main.endpoints.department.DepartmentRepository;
 import kh.farrukh.espielspringdatajpa.main.endpoints.faculty.Faculty;
@@ -36,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Collections;
 import java.util.List;
@@ -72,15 +77,16 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
     @Override
     public void run(String... args) {
         // TODO: 7/28/22 write tests for each situation
-        populateMainTestData();
-        populateRelationshipsTestData();
-        testLazyFetchWithOneParentEntity();
-        testLazyFetchWithMultipleParentEntity();
-        testCascadeTypePersist();
-        testCascadeTypeRemove();
-        testCascadeTypeMerge();
-        testOrphanRemoval();
-        testEntityGraph();
+//        populateMainTestData();
+//        populateRelationshipsTestData();
+//        testLazyFetchWithOneParentEntity();
+//        testLazyFetchWithMultipleParentEntity();
+//        testCascadeTypePersist();
+//        testCascadeTypeRemove();
+//        testCascadeTypeMerge();
+//        testOrphanRemoval();
+//        testEntityGraph();
+        testSpecificationsViaCustomImplementationsForEachFilter();
     }
 
     private void populateMainTestData() {
@@ -388,7 +394,9 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         });
     }
 
-    private void testSpecifications() {
+    private void initSpecificationsData() {
+        writerRepository.deleteAll();
+        articleRepository.deleteAll();
         Writer writer1 = new Writer("Hamdam Xudayberganov", Profession.PROGRAMMER);
         Writer writer2 = new Writer("Adam Smith", Profession.ECONOMIST);
         Writer writer3 = new Writer("Uncle Ben", Profession.PROGRAMMER);
@@ -449,17 +457,38 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         articleRepository.saveAll(List.of(book1, book2, book3, book4, book5, book6));
 
         // get all and print
-        articleRepository.findAll().forEach(book -> {
-            System.out.println("title: " + book.getTitle());
-            System.out.println("tags: " + book.getTags());
+//        articleRepository.findAll().forEach(book -> {
+//            System.out.println("title: " + book.getTitle());
+//            System.out.println("tags: " + book.getTags());
+//            System.out.println("authors:");
+//            book.getAuthors().forEach(author -> {
+//                System.out.println("name: " + author.getFullName());
+//                System.out.println("profession: " + author.getProfession().name().toLowerCase());
+//            });
+//            System.out.println("--------------------------------------");
+//        });
+    }
+
+    private void testSpecificationsViaCustomImplementationsForEachFilter() {
+        initSpecificationsData();
+
+        Specification<Article> specification = Specification
+                .where(new ArticleMinPublishedYearSpecification(2000))
+                .and(new ArticleMaxPublishedYearSpecification(null))
+                .and(new ArticleHasTagsSpecification(List.of("programming")))
+                .and(new ArticleHasAuthorsSpecification(List.of(1L)));
+
+        List<Article> articles = articleRepository.findAll(specification);
+        System.out.println("size: " + articles.size());
+        articles.forEach(article -> {
+            System.out.println("title: " + article.getTitle());
+            System.out.println("tags: " + article.getTags());
             System.out.println("authors:");
-            book.getAuthors().forEach(author -> {
+            article.getAuthors().forEach(author -> {
                 System.out.println("name: " + author.getFullName());
                 System.out.println("profession: " + author.getProfession().name().toLowerCase());
             });
             System.out.println("--------------------------------------");
         });
-
-        // filter via JPA Criteria
     }
 }
