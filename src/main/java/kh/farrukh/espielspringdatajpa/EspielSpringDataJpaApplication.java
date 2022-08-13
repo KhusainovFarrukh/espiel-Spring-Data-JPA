@@ -43,6 +43,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -71,6 +73,8 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
     private final ArticleRepository articleRepository;
     private final WriterRepository writerRepository;
 
+    private final EntityManager em;
+
     public static void main(String[] args) {
         SpringApplication.run(EspielSpringDataJpaApplication.class, args);
     }
@@ -88,7 +92,8 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 //        testOrphanRemoval();
 //        testEntityGraph();
 //        testSpecificationsViaCustomImplementationsForEachFilter();
-        testSpecificationsViaUtilMethods();
+//        testSpecificationsViaUtilMethods();
+        testCriteriaAPI();
     }
 
     private void populateMainTestData() {
@@ -509,5 +514,30 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         );
 
         printSpecificationResults(articleRepository.findAll(specification));
+    }
+
+    private void testCriteriaAPI() {
+        initSpecificationsData();
+
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Article> query = criteriaBuilder.createQuery(Article.class);
+        Root<Article> root = query.from(Article.class);
+        query.distinct(true);
+
+        Predicate minimumPublishedYearPredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("publishedYear"), 2000);
+        Predicate maximumPublishedYearPredicate = criteriaBuilder.lessThanOrEqualTo(root.get("publishedYear"), 2099);
+        Join<Article, String> tags = root.join("tags");
+        Predicate hasTagPredicate = tags.in(List.of("programming"));
+        Join<Article, Writer> authorsJoin = root.join("authors");
+        Predicate hasAuthors = authorsJoin.get("id").in(List.of(1L, 3L));
+
+        query.where(criteriaBuilder.and(
+                minimumPublishedYearPredicate,
+                maximumPublishedYearPredicate,
+                hasTagPredicate,
+                hasAuthors
+        ));
+
+        printSpecificationResults(em.createQuery(query.select(root)).getResultList());
     }
 }
