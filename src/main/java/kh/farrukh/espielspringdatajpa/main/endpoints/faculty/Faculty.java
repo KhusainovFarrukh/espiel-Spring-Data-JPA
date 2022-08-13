@@ -25,7 +25,9 @@ import javax.persistence.*;
  * <p/>
  * Use uniqueConstraints to generate unique key for some columns with custom name.
  * It is best practice. Because setting unique property of @Column to true generates
- * unique key with random name
+ * unique key with random name.
+ * Unique constraints can be composite:
+ * https://stackoverflow.com/questions/8245935/creating-a-composite-unique-constraints-on-multiple-columns
  *
  * catalog - Catalogs are named collections of schemas in an SQL-environment. An SQL-environment contains zero
  * or more catalogs. A catalog contains one or more schemas, but always contains a schema named INFORMATION_SCHEMA
@@ -37,6 +39,7 @@ import javax.persistence.*;
  * searching large tables.
  * more about index: https://www.sqlshack.com/sql-index-overview-and-strategy/
  */
+// TODO: 8/13/22 secondary table
 @Table(name = "faculties")
 @Getter
 @Setter
