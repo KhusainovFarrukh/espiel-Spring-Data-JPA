@@ -4,6 +4,7 @@ import kh.farrukh.espielspringdatajpa.fetch_type_and_cascade.ChildEntity;
 import kh.farrukh.espielspringdatajpa.fetch_type_and_cascade.ChildEntityRepository;
 import kh.farrukh.espielspringdatajpa.fetch_type_and_cascade.ParentEntity;
 import kh.farrukh.espielspringdatajpa.fetch_type_and_cascade.ParentEntityRepository;
+import kh.farrukh.espielspringdatajpa.jpa_specification.*;
 import kh.farrukh.espielspringdatajpa.main.endpoints.department.Department;
 import kh.farrukh.espielspringdatajpa.main.endpoints.department.DepartmentRepository;
 import kh.farrukh.espielspringdatajpa.main.endpoints.faculty.Faculty;
@@ -35,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -61,6 +61,9 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
     private final ParentEntityRepository parentEntityRepository;
     private final ChildEntityRepository childEntityRepository;
+
+    private final ArticleRepository articleRepository;
+    private final WriterRepository writerRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(EspielSpringDataJpaApplication.class, args);
@@ -383,5 +386,80 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
             log.info("parent title: " + parentEntity.getTitle());
             parentEntity.getChildren().forEach(child -> log.info("child name: " + child.getName()));
         });
+    }
+
+    private void testSpecifications() {
+        Writer writer1 = new Writer("Hamdam Xudayberganov", Profession.PROGRAMMER);
+        Writer writer2 = new Writer("Adam Smith", Profession.ECONOMIST);
+        Writer writer3 = new Writer("Uncle Ben", Profession.PROGRAMMER);
+        Writer writer4 = new Writer("John Krakovski", Profession.SCIENTIST);
+        Writer writer5 = new Writer("Sam Jones", Profession.OTHER);
+
+        Article book1 = new Article(
+                "My Java journey",
+                2023,
+                List.of("programming", "life", "autobiography"),
+                89.9,
+                427,
+                List.of(writer1)
+        );
+
+        Article book2 = new Article(
+                "Supply and Demand",
+                1876,
+                List.of("economics", "science"),
+                119.9,
+                241,
+                List.of(writer2)
+        );
+        Article book3 = new Article(
+                "Very large book",
+                2025,
+                List.of("programming", "life", "economics"),
+                19.9,
+                1429,
+                List.of(writer1, writer2, writer3, writer4, writer5)
+        );
+
+        Article book4 = new Article(
+                "Economics and Clean Code",
+                2037,
+                List.of("economics", "programming"),
+                159.9,
+                436,
+                List.of(writer1, writer3)
+        );
+        Article book5 = new Article(
+                "Science about everything",
+                2017,
+                List.of("science"),
+                59.9,
+                43,
+                List.of(writer4)
+        );
+        Article book6 = new Article(
+                "Everything about everything",
+                1999,
+                List.of("science", "programming", "life", "economics"),
+                19.9,
+                444,
+                List.of(writer5)
+        );
+
+        articleRepository.saveAll(List.of(book1, book2, book3, book4, book5, book6));
+
+        // get all and print
+        articleRepository.findAll().forEach(book -> {
+            System.out.println("title: " + book.getTitle());
+            System.out.println("tags: " + book.getTags());
+            System.out.println("authors:");
+            book.getAuthors().forEach(author -> {
+                System.out.println("name: " + author.getFullName());
+                System.out.println("profession: " + author.getProfession().name().toLowerCase());
+            });
+            System.out.println("--------------------------------------");
+        });
+
+        // filter via JPA Criteria
     }
 }
