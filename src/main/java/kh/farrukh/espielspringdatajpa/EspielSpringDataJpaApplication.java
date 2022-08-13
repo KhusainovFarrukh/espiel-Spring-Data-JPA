@@ -9,6 +9,7 @@ import kh.farrukh.espielspringdatajpa.jpa_specification.custom_specifications.Ar
 import kh.farrukh.espielspringdatajpa.jpa_specification.custom_specifications.ArticleHasTagsSpecification;
 import kh.farrukh.espielspringdatajpa.jpa_specification.custom_specifications.ArticleMaxPublishedYearSpecification;
 import kh.farrukh.espielspringdatajpa.jpa_specification.custom_specifications.ArticleMinPublishedYearSpecification;
+import kh.farrukh.espielspringdatajpa.jpa_specification.specification_utils.ArticleSpecifications;
 import kh.farrukh.espielspringdatajpa.main.endpoints.department.Department;
 import kh.farrukh.espielspringdatajpa.main.endpoints.department.DepartmentRepository;
 import kh.farrukh.espielspringdatajpa.main.endpoints.faculty.Faculty;
@@ -86,7 +87,8 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 //        testCascadeTypeMerge();
 //        testOrphanRemoval();
 //        testEntityGraph();
-        testSpecificationsViaCustomImplementationsForEachFilter();
+//        testSpecificationsViaCustomImplementationsForEachFilter();
+        testSpecificationsViaUtilMethods();
     }
 
     private void populateMainTestData() {
@@ -395,8 +397,8 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
     }
 
     private void initSpecificationsData() {
-        writerRepository.deleteAll();
         articleRepository.deleteAll();
+        writerRepository.deleteAll();
         Writer writer1 = new Writer("Hamdam Xudayberganov", Profession.PROGRAMMER);
         Writer writer2 = new Writer("Adam Smith", Profession.ECONOMIST);
         Writer writer3 = new Writer("Uncle Ben", Profession.PROGRAMMER);
@@ -469,16 +471,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 //        });
     }
 
-    private void testSpecificationsViaCustomImplementationsForEachFilter() {
-        initSpecificationsData();
-
-        Specification<Article> specification = Specification
-                .where(new ArticleMinPublishedYearSpecification(2000))
-                .and(new ArticleMaxPublishedYearSpecification(null))
-                .and(new ArticleHasTagsSpecification(List.of("programming")))
-                .and(new ArticleHasAuthorsSpecification(List.of(1L)));
-
-        List<Article> articles = articleRepository.findAll(specification);
+    private void printSpecificationResults(List<Article> articles) {
         System.out.println("size: " + articles.size());
         articles.forEach(article -> {
             System.out.println("title: " + article.getTitle());
@@ -490,5 +483,31 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
             });
             System.out.println("--------------------------------------");
         });
+    }
+
+    private void testSpecificationsViaCustomImplementationsForEachFilter() {
+        initSpecificationsData();
+
+        Specification<Article> specification = Specification
+                .where(new ArticleMinPublishedYearSpecification(2000))
+                .and(new ArticleMaxPublishedYearSpecification(null))
+                .and(new ArticleHasTagsSpecification(List.of("programming")))
+                .and(new ArticleHasAuthorsSpecification(List.of(1L, 3L)));
+
+        printSpecificationResults(articleRepository.findAll(specification));
+    }
+
+    private void testSpecificationsViaUtilMethods() {
+        initSpecificationsData();
+
+        Specification<Article> specification = ArticleSpecifications.filterBy(
+                new ArticleFilterParams(
+                        2000,
+                        null,
+                        List.of("programming"),
+                        List.of(1L, 3L))
+        );
+
+        printSpecificationResults(articleRepository.findAll(specification));
     }
 }
