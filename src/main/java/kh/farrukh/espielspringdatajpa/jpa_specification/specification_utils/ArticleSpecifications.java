@@ -36,9 +36,9 @@ public class ArticleSpecifications {
     public static Specification<Article> hasAuthor(List<Long> authorIds) {
         return (root, query, criteriaBuilder) -> {
             if (authorIds == null || authorIds.isEmpty()) return null;
-            Join<Article, Writer> tagsJoin = root.join("authors");
+            Join<Article, Writer> authorsJoin = root.join("authors");
             query.distinct(true);
-            return tagsJoin.get("id").in(authorIds);
+            return authorsJoin.get("id").in(authorIds);
         };
     }
 
