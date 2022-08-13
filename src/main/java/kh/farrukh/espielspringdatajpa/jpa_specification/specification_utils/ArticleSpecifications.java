@@ -28,6 +28,7 @@ public class ArticleSpecifications {
         return (root, query, criteriaBuilder) -> {
             if (tags == null || tags.isEmpty()) return null;
             Join<Article, String> tagsJoin = root.join("tags");
+            query.distinct(true);
             return tagsJoin.in(tags);
         };
     }
@@ -36,6 +37,7 @@ public class ArticleSpecifications {
         return (root, query, criteriaBuilder) -> {
             if (authorIds == null || authorIds.isEmpty()) return null;
             Join<Article, Writer> tagsJoin = root.join("authors");
+            query.distinct(true);
             return tagsJoin.get("id").in(authorIds);
         };
     }
