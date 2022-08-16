@@ -38,6 +38,9 @@ import kh.farrukh.espielspringdatajpa.relationships.teacher.Teacher;
 import kh.farrukh.espielspringdatajpa.relationships.teacher.TeacherRepository;
 import kh.farrukh.espielspringdatajpa.secondary_table.one_entity_separate_tables.MealV2;
 import kh.farrukh.espielspringdatajpa.secondary_table.one_entity_separate_tables.MealV2Repository;
+import kh.farrukh.espielspringdatajpa.secondary_table.secondary_table_with_embedded.AllergensV3;
+import kh.farrukh.espielspringdatajpa.secondary_table.secondary_table_with_embedded.MealV3;
+import kh.farrukh.espielspringdatajpa.secondary_table.secondary_table_with_embedded.MealV3Repository;
 import kh.farrukh.espielspringdatajpa.secondary_table.separate_entities.AllergensV1;
 import kh.farrukh.espielspringdatajpa.secondary_table.separate_entities.AllergensV1Repository;
 import kh.farrukh.espielspringdatajpa.secondary_table.separate_entities.MealV1;
@@ -82,6 +85,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
     private final AllergensV1Repository allergensV1Repository;
     private final MealV1Repository mealV1Repository;
     private final MealV2Repository mealV2Repository;
+    private final MealV3Repository mealV3Repository;
 
     private final EntityManager em;
 
@@ -105,7 +109,8 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 //        testSpecificationsViaUtilMethods();
 //        testCriteriaAPI();
 //        testSecondaryTable_separateEntities();
-        testSecondaryTable_oneEntity_separateTable();
+//        testSecondaryTable_oneEntity_separateTable();
+        testSecondaryTable_secondaryTable_with_embedded();
     }
 
     private void populateMainTestData() {
@@ -582,5 +587,19 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         );
 
         mealV2Repository.findAll().forEach(meal -> System.out.println(meal.toString()));
+    }
+
+    private void testSecondaryTable_secondaryTable_with_embedded() {
+        mealV3Repository.deleteAll();
+
+        AllergensV3 allergens1 = new AllergensV3(false, false, false);
+        AllergensV3 allergens2 = new AllergensV3(true, true, false);
+        AllergensV3 allergens3 = new AllergensV3(true, true, true);
+
+        MealV3 meal1 = mealV3Repository.save(new MealV3("meal 1", "desc", 1.0, allergens1));
+        MealV3 meal2 = mealV3Repository.save(new MealV3("meal 1", "desc", 1.0, allergens2));
+        MealV3 meal3 = mealV3Repository.save(new MealV3("meal 1", "desc", 1.0, allergens3));
+
+        mealV3Repository.findAll().forEach(meal -> System.out.println(meal.toString()));
     }
 }
