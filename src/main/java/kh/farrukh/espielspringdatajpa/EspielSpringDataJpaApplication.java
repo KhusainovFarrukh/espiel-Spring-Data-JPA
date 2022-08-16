@@ -36,6 +36,8 @@ import kh.farrukh.espielspringdatajpa.relationships.student_card.StudentCard;
 import kh.farrukh.espielspringdatajpa.relationships.student_card.StudentCardRepository;
 import kh.farrukh.espielspringdatajpa.relationships.teacher.Teacher;
 import kh.farrukh.espielspringdatajpa.relationships.teacher.TeacherRepository;
+import kh.farrukh.espielspringdatajpa.secondary_table.one_entity_separate_tables.MealV2;
+import kh.farrukh.espielspringdatajpa.secondary_table.one_entity_separate_tables.MealV2Repository;
 import kh.farrukh.espielspringdatajpa.secondary_table.separate_entities.AllergensV1;
 import kh.farrukh.espielspringdatajpa.secondary_table.separate_entities.AllergensV1Repository;
 import kh.farrukh.espielspringdatajpa.secondary_table.separate_entities.MealV1;
@@ -79,6 +81,7 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 
     private final AllergensV1Repository allergensV1Repository;
     private final MealV1Repository mealV1Repository;
+    private final MealV2Repository mealV2Repository;
 
     private final EntityManager em;
 
@@ -101,7 +104,8 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
 //        testSpecificationsViaCustomImplementationsForEachFilter();
 //        testSpecificationsViaUtilMethods();
 //        testCriteriaAPI();
-        testSecondaryTable_separateEntities();
+//        testSecondaryTable_separateEntities();
+        testSecondaryTable_oneEntity_separateTable();
     }
 
     private void populateMainTestData() {
@@ -562,5 +566,21 @@ public class EspielSpringDataJpaApplication implements CommandLineRunner {
         MealV1 meal3 = mealV1Repository.save(new MealV1("meal 1", "desc", 1.0, allergens3));
 
         mealV1Repository.findAll().forEach(meal -> System.out.println(meal.toString()));
+    }
+
+    private void testSecondaryTable_oneEntity_separateTable() {
+        mealV2Repository.deleteAll();
+
+        MealV2 meal1 = mealV2Repository.save(
+                new MealV2("meal 1", "desc", 1.0, false, false, false)
+        );
+        MealV2 meal2 = mealV2Repository.save(
+                new MealV2("meal 1", "desc", 1.0, true, true, false)
+        );
+        MealV2 meal3 = mealV2Repository.save(
+                new MealV2("meal 1", "desc", 1.0, true, true, true)
+        );
+
+        mealV2Repository.findAll().forEach(meal -> System.out.println(meal.toString()));
     }
 }
